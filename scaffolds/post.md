@@ -1,5 +1,15 @@
 ---
 title: {{ title }}
 date: {{ date }}
-tags:
+author: pounds 
+img:  
+coverImg:  
+top:  
+cover:  
+toc: true 
+password: 
+mathjax: true 
+summary: 
+tags:  
+categories:
 ---
