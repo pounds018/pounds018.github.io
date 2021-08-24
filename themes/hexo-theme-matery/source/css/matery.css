@@ -101,7 +101,7 @@ blockquote {
 }
 pre {
     /* 修改2.5rem可以解决行号的问题 */
-    padding: 2rem 1rem 1rem 2.5rem !important;
+    padding: 2rem 1rem 1rem 3rem !important;
     border-radius: 0.35rem;
     tab-size: 4;
 }
