@@ -115,3 +115,11 @@ search:
   path: search.xml
   field: post
 
+# emoji
+githubEmojis:
+  enable: true
+  className: github-emoji
+  inject: true
+  styles:
+  customEmojis:
+
