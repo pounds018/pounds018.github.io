@@ -99,9 +99,9 @@ blockquote {
     color: #666;
     background-color: rgba(66, 185, 131, .1);
 }
-
 pre {
-    padding: 2rem 1rem 1rem 3rem !important;
+    /* 修改2.5rem可以解决行号的问题 */
+    padding: 2rem 1rem 1rem 2.5rem !important;
     border-radius: 0.35rem;
     tab-size: 4;
 }

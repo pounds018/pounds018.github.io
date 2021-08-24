@@ -196,11 +196,6 @@ postInfo:
   min2read: false # 文章阅读时长
   readCount: false # 文章阅读次数
 
-# Whether to activate the 'love' effect of clicking on the page.
-# 是否激活点击页面的'爱心'效果，默认激活.
-clicklove:
-  enable: true
-
 # profile in about page, including avatars, career, and personal introductions.
 # 在”关于”页面中配置个人信息，包括头像、职业和个人介绍.
 profile:
@@ -612,3 +607,11 @@ bbtime:
  appId: # 你的appId
  appKey: # 你的appKey
  serverURLs: # https://你的api
+
+# 鼠标点击烟花爆炸动效
+fireworks:
+  enable: true
+
+# 是否激活点击页面的'爱心'效果，默认激活.
+clicklove:
+  enable: false
