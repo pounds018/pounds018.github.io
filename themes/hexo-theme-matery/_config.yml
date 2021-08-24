@@ -118,7 +118,7 @@ recommend:
 # Configure website favicon and LOGO
 # 配置网站favicon和网站LOGO
 favicon: /favicon.png
-logo: /medias/logo.svg
+logo: /medias/logo.png
 
 # The configuration of the second button in the home banner,
 # including the display name of the button, the font awesome icon, and the hyperlink to the button.
@@ -127,20 +127,20 @@ indexbtn:
   enable: true
   name: Github
   icon: fab fa-github-alt
-  url: https://github.com/blinkfox/hexo-theme-matery
+  url: https://github.com/pounds018
 
 # The configurations of the second line of home banner
 # icon/button will not show up if you leave the corresponding socialLink empty
 # 首页 banner 中的第二行个人信息配置，留空即不启用
 socialLink:
-  github:  https://github.com/blinkfox
-  email: 1181062873@qq.com
+  github:  https://github.com/pounds018
+  email: 1003937793@qq.com
   facebook: # https://www.facebook.com/xxx
   twitter: # https://twitter.com/xxx
-  qq: 1181062873
+  qq: 1003937793
   weibo: # https://weibo.com/xxx
   zhihu: # https://www.zhihu.com/xxx
-  rss: true # true、false
+  rss: false # true、false
 
 # Whether to activate the Post TOC, and Configure which title types are supported by TOC support.
 # You can add `toc: false` to the Front-matter of a post to turn off the TOC.
