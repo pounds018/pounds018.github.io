@@ -57,7 +57,7 @@ prismjs:
   tab_replace: ''
 prism_plugin:
   mode: 'preprocess' # realtime/preprocess
-  theme: 'default'
+  theme: 'tomorrow'
   line_number: true # default false
 
 # Home page setting
