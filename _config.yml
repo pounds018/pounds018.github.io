@@ -40,9 +40,14 @@ external_link:
   exclude: ''
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: ture
+marked:
+  prependRoot: true
+  postAsset: true
 relative_link: false
 future: true
+
+# 代码高亮
 highlight:
   enable: false
   line_number: true
