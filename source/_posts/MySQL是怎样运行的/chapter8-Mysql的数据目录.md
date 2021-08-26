@@ -13,7 +13,7 @@ summary:
 tags:
     - MySQL
 categories:
-    - MySql是怎样运行的
+    - MySQL是怎样运行的
 ---
 ## 8.1 数据库和文件系统的关系:
 
