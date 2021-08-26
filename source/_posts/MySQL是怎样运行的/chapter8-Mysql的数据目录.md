@@ -5,7 +5,7 @@ toc: true
 mathjax: true
 date: 2021-08-26 22:44:12
 img:
-coverImg:
+coverImg: coverage.png
 top:
 cover:
 password:
@@ -35,5 +35,5 @@ Mysql服务器在启动的时候会从文件系统中的某个目录下加载一
 
 `show variables like 'datadir'`
 
-![image-20210826221858778](https://raw.githubusercontent.com/pounds018/MyPicGo/master/mysql/02_mysql%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C/chapter8_mysql%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/image-20210826221858778.png)
+
 
