@@ -610,7 +610,7 @@ bbtime:
 
 # 鼠标点击烟花爆炸动效
 fireworks:
-  enable: true
+  enable: false
 
 # 是否激活点击页面的'爱心'效果，默认激活.
 clicklove:
