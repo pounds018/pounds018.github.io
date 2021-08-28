@@ -35,5 +35,14 @@ Mysql服务器在启动的时候会从文件系统中的某个目录下加载一
 
 `show variables like 'datadir'`
 
-![image-20210826233812143](chapter8-Mysql的数据目录/image-20210826233812143.png)
+![](chapter8-Mysql的数据目录/image-20210826233812143.png)
 
+{%r%}
+紅色
+{%endr%}
+{%g%}
+綠色
+{%endg%}
+{%y%}
+黃色
+{%endy%}
