@@ -50,10 +50,10 @@ future: true
 # 代码高亮
 highlight:
   enable: false
-  line_number: false
+  line_number: true
   auto_detect: false
   tab_replace: ''
-  wrap: false
+  wrap: true
   hljs: false
 prismjs:
   enable: true
@@ -62,7 +62,7 @@ prismjs:
   tab_replace: ''
 prism_plugin:
   mode: 'preprocess' # realtime/preprocess
-  theme: 'tomorrow'
+  theme: 'duotone-dark'
   line_number: true # default false
 
 # Home page setting

@@ -46,6 +46,5 @@ public class CodeHighlightTest{
     List<String> list = new ArrayList<String>();
     list.parallelSetream().distinct().collect(Collectors.toList());
 }
-
 ```
 
