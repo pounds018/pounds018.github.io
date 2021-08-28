@@ -36,3 +36,12 @@ $ hexo deploy
 ```
 
 More info: [Deployment](https://hexo.io/docs/one-command-deployment.html)
+
+
+```java
+    public class Test{
+        public static void main(String[] args){
+            System.sout.println("辣鸡");
+        }
+    }
+```
