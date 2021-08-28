@@ -1,8 +1,10 @@
 ---
 title: 8_MySQL数据目录
-date: 2021-08-29 00:29:54
 tags:
-    - MySQL
+  - MySQL
+categories:
+  - MySQL
+date: 2021-08-29 00:29:54
 ---
 
 ## 8.1 数据库和文件系统的关系:
