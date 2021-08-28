@@ -1,5 +1,5 @@
 <hr>
-<p>title: chapter8_Mysql的数据目录<br>author: pounds<br>toc: true<br>mathjax: true<br>date: 2021-08-26 22:44:12<br>img:<br>coverImg: coverage.png<br>top:<br>cover:<br>password:<br>summary:<br>tags:<br>    - MySQL<br>categories:<br>    - MySql是怎样运行的</p>
+<p>title: chapter8_Mysql的数据目录<br>author: pounds<br>toc: true<br>mathjax: true<br>date: 2021-08-26 22:44:12<br>img:<br>coverImg: coverage.png<br>top:<br>cover:<br>password:<br>summary:<br>tags:<br>    - MySQL<br>categories:<br>    - MySQL是怎样运行的</p>
 <hr>
 <h2 id="8-1-数据库和文件系统的关系"><a href="#8-1-数据库和文件系统的关系" class="headerlink" title="8.1 数据库和文件系统的关系:"></a>8.1 数据库和文件系统的关系:</h2><p><code>Mysql</code>中像<code>InnoDB</code>和<code>MyISAM</code>这类存储引擎都是将数据存储在磁盘中,操作系统通过文件系统来管理磁盘,换句话说: 数据是存储在文件系统中的.</p>
 <p>读数据是从文件系统中将数据读取到内存中,写数据是从内存中将数据写入到文件系统.</p>
@@ -7,4 +7,5 @@
 <h3 id="8-2-1-数据目录和安装目录的区别"><a href="#8-2-1-数据目录和安装目录的区别" class="headerlink" title="8.2.1 数据目录和安装目录的区别:"></a>8.2.1 数据目录和安装目录的区别:</h3><p><code>安装目录</code>: 安装目录是mysql程序运行文件存放的地方</p>
 <p><code>数据目录</code>: 数据目录是mysql程序在运行过程中产生的一些 <code>用户数据</code>,<code>程序运行状态数据</code>等数据存储的地方</p>
 <h3 id="8-2-2-数据目录在哪儿"><a href="#8-2-2-数据目录在哪儿" class="headerlink" title="8.2.2 数据目录在哪儿:"></a>8.2.2 数据目录在哪儿:</h3><p><code>show variables like &#39;datadir&#39;</code></p>
-<p><img src="/chapter8-Mysql%E7%9A%84%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/image-20210826233812143.png" alt="image-20210826233812143"></p>
+<p><img src="/chapter8-Mysql%E7%9A%84%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/image-20210826233812143.png"></p>
+<p>{%r%}<br>紅色<br>{%endr%}<br>{%g%}<br>綠色<br>{%endg%}<br>{%y%}<br>黃色<br>{%endy%}</p>
