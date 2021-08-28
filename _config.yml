@@ -135,3 +135,8 @@ wordCount:
   min2read: true
   totalCount: true
 
+# 自动分类插件
+auto_category:
+  enable: true
+  depth: 1
+
