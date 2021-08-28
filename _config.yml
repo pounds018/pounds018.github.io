@@ -50,8 +50,8 @@ future: true
 # 代码高亮
 highlight:
   enable: false
-  line_number: true
   auto_detect: false
+  line_number: true
   tab_replace: ''
   wrap: true
   hljs: false
@@ -60,10 +60,10 @@ prismjs:
   preprocess: true
   line_number: true
   tab_replace: ''
-prism_plugin:
-  mode: 'preprocess' # realtime/preprocess
-  theme: 'duotone-dark'
-  line_number: true # default false
+#prism_plugin:
+#  mode: 'preprocess' # realtime/preprocess
+#  theme: 'duotone-dark'
+#  line_number: true # default false
 
 # Home page setting
 # path: Root path for your blogs index page. (default = '')

@@ -38,13 +38,8 @@ $ hexo deploy
 
 More info: [Deployment](https://hexo.io/docs/one-command-deployment.html)
 
-```java
-public class CodeHighlightTest{
-    /**
-     * 这一段使用来测试代码高亮的
-     */
-    List<String> list = new ArrayList<String>();
-    list.parallelSetream().distinct().collect(Collectors.toList());
-}
+```javascript
+    var name;
+    const name2;
 ```
 
