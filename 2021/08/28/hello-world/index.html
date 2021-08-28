@@ -273,7 +273,33 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Hello World</h1>
+                    <h1 class="description post-title">Hello World</h1>
+                </div>
+                <div class="post-info">
+                    
+                        <div class="post-date info-break-policy">
+                            <i class="far fa-check-circle"></i>发布日期:&nbsp;&nbsp;
+                            2021-08-28
+                        </div>
+                    
+
+                    
+                        <div class="post-date info-break-policy">
+                            | <i class="fas fa-history fa-fw"></i>更新日期:&nbsp;&nbsp;
+                            2021-08-28
+                        </div>
+                    
+
+                    
+                        <div class="info-break-policy">
+                            | <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                            277
+                        </div>
+                    
+
+                    
+
+                    
                 </div>
             </div>
         </div>
@@ -396,35 +422,9 @@
                     
                 </div>
             </div>
-
-            <div class="post-info">
-                
-                <div class="post-date info-break-policy">
-                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-08-28
-                </div>
-                
-
-                
-                <div class="post-date info-break-policy">
-                    <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-08-28
-                </div>
-                
-
-                
-                <div class="info-break-policy">
-                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    87
-                </div>
-                
-
-                
-
-                
-            </div>
         </div>
-        <hr class="clearfix">
+        <!-- 文章顶部下划线 -->
+        <!-- <hr class="clearfix"> -->
 
         
         <!-- 是否加载使用自带的 prismjs. -->
@@ -453,9 +453,68 @@
         <span class="token class-name">System</span><span class="token punctuation">.</span>sout<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"辣鸡"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> test<span class="token punctuation">:</span>
+    lallala<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+
+<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+
+<span class="token comment">// 事务操作示例</span>
+<span class="token keyword">func</span> <span class="token function">transactionDemo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	tx<span class="token punctuation">,</span> err <span class="token operator">:=</span> sqlxDB<span class="token punctuation">.</span><span class="token function">Begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 开启事务</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">if</span> tx <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+			tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
+		<span class="token punctuation">}</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"begin trans failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	sqlStr1 <span class="token operator">:=</span> <span class="token string">"Update t_go_study_user set name = '张三' where id=?"</span>
+	ret1<span class="token punctuation">,</span> err <span class="token operator">:=</span> tx<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span>sqlStr1<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"exec sql1 failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	affRow1<span class="token punctuation">,</span> err <span class="token operator">:=</span> ret1<span class="token punctuation">.</span><span class="token function">RowsAffected</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"exec ret1.RowsAffected() failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+
+	sqlStr2 <span class="token operator">:=</span> <span class="token string">"Update t_go_study_user set name = '张三' where id=?"</span>
+	ret2<span class="token punctuation">,</span> err <span class="token operator">:=</span> tx<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span>sqlStr2<span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"exec sql2 failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	affRow2<span class="token punctuation">,</span> err <span class="token operator">:=</span> ret2<span class="token punctuation">.</span><span class="token function">RowsAffected</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"exec ret1.RowsAffected() failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>affRow1<span class="token punctuation">,</span> affRow2<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> affRow1 <span class="token operator">==</span> <span class="token number">1</span> <span class="token operator">&amp;&amp;</span> affRow2 <span class="token operator">==</span> <span class="token number">1</span> <span class="token punctuation">{</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"事务提交啦..."</span><span class="token punctuation">)</span>
+		tx<span class="token punctuation">.</span><span class="token function">Commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 提交事务</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"事务回滚啦..."</span><span class="token punctuation">)</span>
+	<span class="token punctuation">}</span>
+
+	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"exec trans success!"</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
                 
             </div>
-            <hr/>
+            <!-- 文章底部下划线 -->
+<!--            <hr/>-->
 
             
 
@@ -812,27 +871,30 @@
                 <span id="year">2021</span>
             
             <span id="year">2021</span>
-            <a href="/about" target="_blank">pounds</a>
-            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
-            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
             <br>
-            
-            
-            
-                
-            
-            
-                <span id="busuanzi_container_site_pv">
-                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
-                    <span id="busuanzi_value_site_pv" class="white-color"></span>
-            </span>
-            
-            
-                <span id="busuanzi_container_site_uv">
-                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
-                    <span id="busuanzi_value_site_uv" class="white-color"></span>
-            </span>
-            
+            <a href="/about" target="_blank">pounds</a>
+            <br>
+            <span>心有猛虎 | 细嗅蔷薇</span>
+<!--            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>-->
+<!--            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>-->
+<!--            <br>-->
+<!--            -->
+<!--            -->
+<!--            -->
+<!--                -->
+<!--            -->
+<!--            -->
+<!--                <span id="busuanzi_container_site_pv">-->
+<!--                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;-->
+<!--                    <span id="busuanzi_value_site_pv" class="white-color"></span>-->
+<!--            </span>-->
+<!--            -->
+<!--            -->
+<!--                <span id="busuanzi_container_site_uv">-->
+<!--                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;-->
+<!--                    <span id="busuanzi_value_site_uv" class="white-color"></span>-->
+<!--            </span>-->
+<!--            -->
             <br>
 
             <!-- 运行天数提醒. -->
