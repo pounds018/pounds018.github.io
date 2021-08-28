@@ -242,7 +242,7 @@ mark {
 
 .bg-color {
     background-image: linear-gradient(to right, #bf30ac 0%, #0f9d58 100%);
-    opacity: 0.9; // 背景渐变设置
+    opacity: 0.8; // 背景渐变设置
 }
 
 .text-color {
@@ -548,7 +548,7 @@ header .go-back i {
 }
 
 .post-cover {
-    height: 40vh !important;
+    height: 30vh !important;
 }
 
 .bg-cover:after {
@@ -590,7 +590,7 @@ header .go-back i {
 
 .bg-cover .post-title {
     margin: 0 auto;
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     font-weight: 400;
 }
 
@@ -1015,7 +1015,7 @@ article .article-tags .chip {
 
 @media only screen and (min-width: 1418px) {
     #artDetail {
-        margin-top: -60px;
+        margin-top: 10px;
         padding: 0 0.75rem;
     }
 }
