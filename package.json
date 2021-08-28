@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "hexo": "^5.0.0",
-    "hexo-asset-image": "git+https://github.com/7ym0n/hexo-asset-image.git",
+    "hexo-asset-image": "^1.0.0",
     "hexo-deployer-git": "^3.0.0",
     "hexo-directory-category": "^1.1.4",
     "hexo-filter-github-emojis": "^3.0.4",
@@ -23,6 +23,7 @@
     "hexo-generator-search": "^2.4.3",
     "hexo-generator-tag": "^1.0.0",
     "hexo-permalink-pinyin": "^1.1.0",
+    "hexo-prismjs-plugin": "^1.1.0",
     "hexo-renderer-ejs": "^1.0.0",
     "hexo-renderer-marked": "^4.0.0",
     "hexo-renderer-stylus": "^2.0.0",

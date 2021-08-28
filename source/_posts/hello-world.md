@@ -43,3 +43,11 @@ More info: [Deployment](https://hexo.io/docs/one-command-deployment.html)
     const name2;
 ```
 
+```java
+public class Test{
+    public static void main (String[] args){
+        List list = new ArrayList();
+    }
+}
+```
+
