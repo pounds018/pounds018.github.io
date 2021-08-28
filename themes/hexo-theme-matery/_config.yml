@@ -117,7 +117,7 @@ recommend:
 
 # Configure website favicon and LOGO
 # 配置网站favicon和网站LOGO
-favicon: /surprise-regular.svg
+favicon: /medias/surprise-regular.svg
 logo: /medias/battle-net-brands.svg
 
 # The configuration of the second button in the home banner,
