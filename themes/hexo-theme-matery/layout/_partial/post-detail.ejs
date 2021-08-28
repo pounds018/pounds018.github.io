@@ -31,45 +31,9 @@
                     <% } %>
                 </div>
             </div>
-
-            <div class="post-info">
-                <% if (theme.postInfo.date) { %>
-                <div class="post-date info-break-policy">
-                    <i class="far fa-calendar-minus fa-fw"></i><%- __('publishDate') %>:&nbsp;&nbsp;
-                    <%- date(page.date, 'YYYY-MM-DD') %>
-                </div>
-                <% } %>
-
-                <% if (theme.postInfo.update) { %>
-                <div class="post-date info-break-policy">
-                    <i class="far fa-calendar-check fa-fw"></i><%- __('updateDate') %>:&nbsp;&nbsp;
-                    <%- date(page.updated, 'YYYY-MM-DD') %>
-                </div>
-                <% } %>
-
-                <% if (theme.postInfo.wordCount) { %>
-                <div class="info-break-policy">
-                    <i class="far fa-file-word fa-fw"></i><%- __('wordCount') %>:&nbsp;&nbsp;
-                    <%= wordcount(page.content) %>
-                </div>
-                <% } %>
-
-                <% if (theme.postInfo.min2read) { %>
-                <div class="info-break-policy">
-                    <i class="far fa-clock fa-fw"></i><%- __('readTimes') %>:&nbsp;&nbsp;
-                    <%= min2read(page.content) %> <%= __('Minutes') %>
-                </div>
-                <% } %>
-
-                <% if (theme.postInfo.readCount && theme.busuanziStatistics && theme.busuanziStatistics.enable) { %>
-                    <div id="busuanzi_container_page_pv" class="info-break-policy">
-                        <i class="far fa-eye fa-fw"></i><%- __('readCount') %>:&nbsp;&nbsp;
-                        <span id="busuanzi_value_page_pv"></span>
-                    </div>
-				<% } %>
-            </div>
         </div>
-        <hr class="clearfix">
+        <!-- 文章顶部下划线 -->
+        <!-- <hr class="clearfix"> -->
 
         <% if (config.prismjs && config.prismjs.enable) { %>
         <!-- 是否加载使用自带的 prismjs. -->
@@ -132,7 +96,8 @@
                     </main>
                 <% } %>
             </div>
-            <hr/>
+            <!-- 文章底部下划线 -->
+<!--            <hr/>-->
 
             <%- partial('_partial/reprint-statement') %>
 

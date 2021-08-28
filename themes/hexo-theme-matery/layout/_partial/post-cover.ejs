@@ -30,7 +30,43 @@ if (page.img) {
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"><%= page.title %></h1>
+                    <h1 class="description post-title"><%= page.title %></h1>
+                </div>
+                <div class="post-info">
+                    <% if (theme.postInfo.date) { %>
+                        <div class="post-date info-break-policy">
+                            <i class="far fa-check-circle"></i><%- __('publishDate') %>:&nbsp;&nbsp;
+                            <%- date(page.date, 'YYYY-MM-DD') %>
+                        </div>
+                    <% } %>
+
+                    <% if (theme.postInfo.update) { %>
+                        <div class="post-date info-break-policy">
+                            | <i class="fas fa-history fa-fw"></i><%- __('updateDate') %>:&nbsp;&nbsp;
+                            <%- date(page.updated, 'YYYY-MM-DD') %>
+                        </div>
+                    <% } %>
+
+                    <% if (theme.postInfo.wordCount) { %>
+                        <div class="info-break-policy">
+                            | <i class="far fa-file-word fa-fw"></i><%- __('wordCount') %>:&nbsp;&nbsp;
+                            <%= wordcount(page.content) %>
+                        </div>
+                    <% } %>
+
+                    <% if (theme.postInfo.min2read) { %>
+                        <div class="info-break-policy">
+                            | <i class="far fa-clock fa-fw"></i><%- __('readTimes') %>:&nbsp;&nbsp;
+                            <%= min2read(page.content) %> <%= __('Minutes') %>
+                        </div>
+                    <% } %>
+
+                    <% if (theme.postInfo.readCount && theme.busuanziStatistics && theme.busuanziStatistics.enable) { %>
+                        <div id="busuanzi_container_page_pv" class="info-break-policy">
+                            | <i class="far fa-eye fa-fw"></i><%- __('readCount') %>:&nbsp;&nbsp;
+                            <span id="busuanzi_value_page_pv"></span>
+                        </div>
+                    <% } %>
                 </div>
             </div>
         </div>
