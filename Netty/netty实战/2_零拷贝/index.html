@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="8 MySQL数据目录, pounds">
+    <meta name="keywords" content="2 零拷贝, pounds">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>8 MySQL数据目录 | pounds</title>
+    <title>2 零拷贝 | pounds</title>
     <link rel="icon" type="image/svg+xml" href="/medias/surprise-regular.svg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -296,18 +296,18 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/6.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description post-title">8 MySQL数据目录</h1>
+                    <h1 class="description post-title">2 零拷贝</h1>
                 </div>
                 <div class="post-info">
                     
                         <div class="post-date info-break-policy">
                             <i class="far fa-check-circle"></i>发布日期:&nbsp;&nbsp;
-                            2021-08-16
+                            2021-08-29
                         </div>
                     
 
@@ -321,7 +321,7 @@
                     
                         <div class="info-break-policy">
                             | <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                            271
+                            1.9k
                         </div>
                     
 
@@ -443,8 +443,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/MySQL/">
-                                <span class="chip bg-color">MySQL</span>
+                            <a href="/tags/netty/">
+                                <span class="chip bg-color">netty</span>
                             </a>
                         
                     </div>
@@ -455,8 +455,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/" class="post-category">
-                                MySQL是怎样运行的
+                            <a href="/categories/netty%E5%AE%9E%E6%88%98/" class="post-category">
+                                netty实战
                             </a>
                         
                     </div>
@@ -476,13 +476,205 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="8-1-数据库和文件系统的关系"><a href="#8-1-数据库和文件系统的关系" class="headerlink" title="8.1 数据库和文件系统的关系:"></a>8.1 数据库和文件系统的关系:</h2><p><code>Mysql</code>中像<code>InnoDB</code>和<code>MyISAM</code>这类存储引擎都是将数据存储在磁盘中,操作系统通过文件系统来管理磁盘,换句话说: 数据是存储在文件系统中的.</p>
-<p>读数据是从文件系统中将数据读取到内存中,写数据是从内存中将数据写入到文件系统.</p>
-<h2 id="8-2-Mysql的数据目录"><a href="#8-2-Mysql的数据目录" class="headerlink" title="8.2 Mysql的数据目录:"></a>8.2 Mysql的数据目录:</h2><p>Mysql服务器在启动的时候会从文件系统中的某个目录下加载一些数据,之后在运行过程中产生的数据也会存储到这个目录下的某些文件中.这个目录就是<code>数据目录</code>.</p>
-<h3 id="8-2-1-数据目录和安装目录的区别"><a href="#8-2-1-数据目录和安装目录的区别" class="headerlink" title="8.2.1 数据目录和安装目录的区别:"></a>8.2.1 数据目录和安装目录的区别:</h3><p><code>安装目录</code>: 安装目录是mysql程序运行文件存放的地方</p>
-<p><code>数据目录</code>: 数据目录是mysql程序在运行过程中产生的一些 <code>用户数据</code>,<code>程序运行状态数据</code>等数据存储的地方</p>
-<h3 id="8-2-2-数据目录在哪儿"><a href="#8-2-2-数据目录在哪儿" class="headerlink" title="8.2.2 数据目录在哪儿:"></a>8.2.2 数据目录在哪儿:</h3><p><code>show variables like 'datadir'</code></p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/8_MySQL%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/image-20210829003423480.png" alt="查看Mysql数据目录"></p>
+                <h2 id="1-NIO-与-零拷贝"><a href="#1-NIO-与-零拷贝" class="headerlink" title="1. NIO 与 零拷贝:"></a>1. NIO 与 零拷贝:</h2><ol>
+<li><p>简介: <code>零拷贝就是一种避免cpu将数据从一块存储拷贝到另外一块存储的技术,零拷贝指的是没有cpu参与拷贝数据</code>  </p>
+<ul>
+<li>零拷贝是网络编程的关键,很多性能优化都离不开零拷贝,利用零拷贝减少不必要的数据拷贝,从而优化网络编程效率  </li>
+<li>零拷贝指的是从操作系统的角度来说,整个操作系统中有且只有一份数据,此外没有与之重复的数据,通过MDA和SG-DMA技术减少cpu拷贝的开销</li>
+<li>java程序中,常用的零拷贝有mmap(内存映射) 和 sendFile()</li>
+</ul>
+</li>
+<li><p>零拷贝的好处:  </p>
+<ul>
+<li>减少或者避免不必要的cpu数据拷贝,从而释放cpu去执行其他任务  </li>
+<li>零拷贝机制能减少用户空间和操作系统内核空间的上下文切换次数</li>
+<li>减少内存的占用  </li>
+</ul>
+</li>
+<li><p>内核空间和用户空间:<br><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/%E5%86%85%E6%A0%B8%E5%92%8C%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4.png" alt="内核和用户空间">  </p>
+<ul>
+<li>用户空间: 提供给各个进程的空间,<code>用户空间不具有访问内核空间资源的权限</code>,如果程序需要使用内核空间的资源,<code>需要通过操作系统调度来完成</code>.从用户空间切换到内核空间,完成操作之后再从内核空间切换到用户空间,<br>这样的消耗很大.</li>
+<li>内核空间: 系统自身使用的空间,主要提供 进程调度,内存分配,连接硬件资源等功能.  </li>
+</ul>
+</li>
+<li><p>缓冲区和虚拟内存:<br><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/%E7%BC%93%E5%86%B2%E5%8C%BA%E5%92%8C%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98.png" alt="缓冲区和虚拟内存">  </p>
+<ul>
+<li><code>直接内存访问技术(Direct Memory Access -DMA)</code>: 在进行I/O设备和内存数据传输的时候,数据传输工作全部交给I/O硬件设备中的DMA技术,<br>从而cpu不需要参与将数据从I/O设备传输到内存这一过程数据的拷贝.  </li>
+<li><code>缓冲区</code>:  内核空间存放I/O过程中需要传输数据的区域  </li>
+<li><code>虚拟内存</code>:  </li>
+</ul>
+</li>
+</ol>
+<h2 id="2-传统i-o看数据拷贝流程"><a href="#2-传统i-o看数据拷贝流程" class="headerlink" title="2. 传统i/o看数据拷贝流程:"></a>2. 传统i/o看数据拷贝流程:</h2><ol>
+<li>以下面这个文件传输为例,了解传统I/O过程中数据拷贝的过程:<br><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/%E4%BC%A0%E7%BB%9F%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E4%BB%A3%E7%A0%81.png" alt="内核和用户空间">  <ul>
+<li>传统I/O文件数据拷贝流程:<br><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/%E4%BC%A0%E7%BB%9F%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B%E5%9B%BE.png" alt="过程图"><br><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/%E4%BC%A0%E7%BB%9F%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E6%8B%B7%E8%B4%9D%E6%B5%81%E7%A8%8B%E6%97%B6%E5%BA%8F%E5%9B%BE.png" alt="时序图"><br>过程总结:<ul>
+<li>上下文切换: 一共发生了四次上下文切换<ol>
+<li>向操作系统发起read请求,<code>从用户空间切换到内核空间</code>  </li>
+<li>read请求完成,向用户返回数据,<code>从内核空间切换到用户空间</code>  </li>
+<li>向操作系统发起write请求, <code>从用户空间切换到内核空间</code>  </li>
+<li>write请求完成,继续执行用户进程其他任务, <code>从内核空间切换到用户空间</code>  </li>
+</ol>
+</li>
+<li>数据拷贝:  一共发生四次拷贝<ol>
+<li>I/O硬件向内核空间缓冲区的DMA拷贝</li>
+<li>内核缓冲区向用户缓冲区的cpu拷贝  </li>
+<li>用户空间缓冲区向socket缓冲区的cpu拷贝  </li>
+<li>socket缓冲区向网卡的DMA拷贝</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="3-优化传统I-O实现零拷贝"><a href="#3-优化传统I-O实现零拷贝" class="headerlink" title="3. 优化传统I/O实现零拷贝:"></a>3. 优化传统I/O实现零拷贝:</h2><ol>
+<li><p>使用mmap()调用优化掉一次<code>cpu拷贝</code>:  </p>
+<ol>
+<li>mmap()调用的效果: 通过内存映射,将内核空间的地址映射到用户空间,<code>达到内核空间和用户空间共享数据的效果</code>,从而减少一次从<code>内核空间拷贝数据到用户空间的cpu拷贝开销</code><br><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/image-20210829174556320.png" alt="mmap()时序图"><br><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/image-20210829174624103.png" alt="mmap()过程图"><br>过程总结:  <ul>
+<li>四次上下文切换:  <ol>
+<li>向操作系统发起mmap()调用,<code>从用户空间切换到内核空间</code></li>
+<li>mmap()调用完成,返回用户空间执行用户进程后续操作,<code>从内核空间切换到用户空间</code></li>
+<li>向操作系统发起write请求, <code>从用户空间切换到内核空间</code></li>
+<li>write请求完成,继续执行用户进程其他任务, <code>从内核空间切换到用户空间</code> </li>
+</ol>
+</li>
+<li>三次数据拷贝:  <ol>
+<li>I/O硬件向内核空间缓冲区的DMA拷贝</li>
+<li>由于内核空间和用户空间共享数据, <code>无需再像用户空间复制数据</code>,在write的时候<code>直接</code>从内核缓冲区通过cpu拷贝数据到socket缓冲区</li>
+<li>socket缓冲区向网卡的DMA拷贝</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>使用sendFile()替换read,write函数, <code>优化掉两次上下文切换</code>  </p>
+<ol>
+<li><p>sendFile函数: </p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include&lt;sys/socket.h&gt;
+ssize_t sendfile(int out_fd, int in_fd, off_t *offset,size_t count);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<ul>
+<li>解释: out_fd是目的文件描述符,in_fd是源文件描述符号,offset是源文件的偏移量,count是需要处理的长度</li>
+<li>sendfile的作用: <ol>
+<li>替换write和read函数,减少两次上下文切换</li>
+<li>在调用sendfile函数的时候,由用户空间切换到内核空间之后,直接在内核空间使用cpu拷贝,向socket缓冲区复制数据,处理完成之后再切换到用户空间  </li>
+</ol>
+</li>
+</ul>
+<p><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/image-20210829174713842.png" alt="sendFile时序图"></p>
+<p><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/image-20210829174745347.png" alt="sendFile过程图"></p>
+<ul>
+<li>总结:  <ul>
+<li>两次上下文切换:  <ol>
+<li>调用sendfile函数,从用户空间切换到内核空间  </li>
+<li>sendfile处理完成,从内核空间切换到用户空间,继续执行用户进程剩下的操作.</li>
+</ol>
+</li>
+<li>三次数据拷贝<ol>
+<li>I/O硬件通过DMA技术,将数据拷贝至内核空间缓冲区  </li>
+<li>用户进程调用sendFile函数之后,<code>数据与用户空间缓冲区不再产生联系</code>, 直接从内核缓冲区通过cpu拷贝数据到socket缓冲区</li>
+<li>socket缓冲向网卡的DMA拷贝  </li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>优化sendfile函数,实现真正的零拷贝,<code>没有cpu拷贝</code>:  </p>
+<ul>
+<li><p>如果网卡支持SG-DMA(The Scatter-Gather Direct Memory Access)技术,就可以进一步<code>减少</code>数据从内核空间经过cpu拷贝到socket缓冲区的开销.原来从内核空间缓冲区,通过cpu拷贝数据到<br>socket缓冲区的过程还在,但是只有关于数据去向和长度信息的描述符才会被附加到套接字缓冲区,这部分的开销可以忽略不计.<br><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/image-20210829174854638.png" alt="真正的零拷贝"></p>
+<p><img src="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/image-20210829174921676.png" alt="真正的零拷贝"></p>
+<ul>
+<li>总结:  <ul>
+<li>2次上下文切换:<ol>
+<li>调用sendfile函数,从用户空间切换到内核空间</li>
+<li>sendfile处理完成,从内核空间切换到用户空间,继续执行用户进程剩下的操作. </li>
+</ol>
+</li>
+<li>2次数据拷贝:  <ol>
+<li>I/O硬件通过DMA技术,将数据拷贝至内核空间缓冲区  </li>
+<li>不再将内存缓冲区的数据复制到socket缓冲区,只是将少部分数据去向描述符和数据长度描述符传递给socket缓冲区,通过SG-DMA技术直接将数据拷贝到网卡中  </li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="4-JAVA-NIO中的零拷贝"><a href="#4-JAVA-NIO中的零拷贝" class="headerlink" title="4. JAVA NIO中的零拷贝:"></a>4. JAVA NIO中的零拷贝:</h2><p>客户端demo:  </p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>pounds<span class="token punctuation">.</span>nio<span class="token punctuation">.</span>zerocopy</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">FileInputStream</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">IOException</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span><span class="token class-name">InetSocketAddress</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>nio<span class="token punctuation">.</span>channels<span class="token punctuation">.</span></span><span class="token class-name">FileChannel</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>nio<span class="token punctuation">.</span>channels<span class="token punctuation">.</span></span><span class="token class-name">SocketChannel</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * @Date 2021/5/9 12:43
+ * @Author by pounds
+ * @Description Nio中的零拷贝
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">NioClient</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+        <span class="token class-name">SocketChannel</span> client <span class="token operator">=</span> <span class="token class-name">SocketChannel</span><span class="token punctuation">.</span><span class="token keyword">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        client<span class="token punctuation">.</span><span class="token function">connect</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InetSocketAddress</span><span class="token punctuation">(</span><span class="token string">"localhost"</span><span class="token punctuation">,</span><span class="token number">7001</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> file <span class="token operator">=</span> <span class="token string">"protoc-3.6.1-win32.zip"</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">FileChannel</span> fileChannel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getChannel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">long</span> startTime <span class="token operator">=</span> <span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// windows系统中,transferTo方法每次只能传输8m,需要分段传输,linux系统则不需要,下面这个写法是linux的写法\</span>
+        <span class="token comment">// transferTo 就是使用的零拷贝</span>
+        fileChannel<span class="token punctuation">.</span><span class="token function">transferTo</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span>fileChannel<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>client<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"总共耗时 %s "</span><span class="token punctuation">,</span><span class="token class-name">System</span><span class="token punctuation">.</span><span class="token function">currentTimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> startTime<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>服务端demo:  </p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">package</span> <span class="token namespace">cn<span class="token punctuation">.</span>pounds<span class="token punctuation">.</span>nio<span class="token punctuation">.</span>zerocopy</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span><span class="token class-name">IOException</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span><span class="token class-name">InetSocketAddress</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>nio<span class="token punctuation">.</span></span><span class="token class-name">ByteBuffer</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>nio<span class="token punctuation">.</span>channels<span class="token punctuation">.</span></span><span class="token class-name">ServerSocketChannel</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>nio<span class="token punctuation">.</span>channels<span class="token punctuation">.</span></span><span class="token class-name">SocketChannel</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * @Date 2021/5/9 12:35
+ * @Author by pounds
+ * @Description Nio中的零拷贝
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">NioServer</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">IOException</span> <span class="token punctuation">{</span>
+        <span class="token class-name">ServerSocketChannel</span> serverSocketChannel <span class="token operator">=</span> <span class="token class-name">ServerSocketChannel</span><span class="token punctuation">.</span><span class="token keyword">open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        serverSocketChannel<span class="token punctuation">.</span><span class="token function">socket</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">bind</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InetSocketAddress</span><span class="token punctuation">(</span><span class="token string">"127.0.0.1"</span><span class="token punctuation">,</span><span class="token number">7001</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token class-name">ByteBuffer</span> byteBuffer <span class="token operator">=</span> <span class="token class-name">ByteBuffer</span><span class="token punctuation">.</span><span class="token function">allocate</span><span class="token punctuation">(</span><span class="token number">4096</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token class-name">SocketChannel</span> socketChannel <span class="token operator">=</span> serverSocketChannel<span class="token punctuation">.</span><span class="token function">accept</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> readCount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span> <span class="token operator">!=</span> readCount<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    readCount <span class="token operator">=</span> socketChannel<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>byteBuffer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                    e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token comment">// 重新读</span>
+                byteBuffer<span class="token punctuation">.</span><span class="token function">rewind</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
                 
             </div>
@@ -498,8 +690,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/MySQL/">
-                                    <span class="chip bg-color">MySQL</span>
+                                <a href="/tags/netty/">
+                                    <span class="chip bg-color">netty</span>
                                 </a>
                             
                         </div>
@@ -549,13 +741,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/Netty/netty%E5%AE%9E%E6%88%98/1_JavaIO%E5%A4%8D%E4%B9%A0/">
+                <a href="/Netty/netty%E5%AE%9E%E6%88%98/3_Netty%E7%AE%80%E4%BB%8B/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="1 JavaIO复习">
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="3 Netty简介">
                         
-                        <span class="card-title">1 JavaIO复习</span>
+                        <span class="card-title">3 Netty简介</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -598,13 +790,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/">
+                <a href="/Netty/netty%E5%AE%9E%E6%88%98/1_JavaIO%E5%A4%8D%E4%B9%A0/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="7 B+树索引的使用">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="1 JavaIO复习">
                         
-                        <span class="card-title">7 B+树索引的使用</span>
+                        <span class="card-title">1 JavaIO复习</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -615,14 +807,14 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-16
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-29
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/" class="post-category">
-                                    MySQL是怎样运行的
+                            <a href="/categories/netty%E5%AE%9E%E6%88%98/" class="post-category">
+                                    netty实战
                                 </a>
                             
                             
@@ -632,8 +824,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/MySQL/">
-                        <span class="chip bg-color">MySQL</span>
+                    <a href="/tags/netty/">
+                        <span class="chip bg-color">netty</span>
                     </a>
                     
                 </div>

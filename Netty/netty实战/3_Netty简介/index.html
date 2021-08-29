@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="关于, pounds">
+    <meta name="keywords" content="3 Netty简介, pounds">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>关于 | pounds</title>
+    <title>3 Netty简介 | pounds</title>
     <link rel="icon" type="image/svg+xml" href="/medias/surprise-regular.svg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -292,568 +292,539 @@
 
 </header>
 
-    <style type="text/css">
-    /* don't remove. */
-    .about-cover {
-        height: 75vh;
-    }
-</style>
+    
 
-<div class="bg-cover pd-header about-cover">
-    <div class="container">
-    <div class="row">
-    <div class="col s10 offset-s1 m8 offset-m2 l8 offset-l2">
-        <div class="brand">
-            <div class="title center-align">
-                
-                一朝,一夕,等风起
-                
-            </div>
 
-            <div class="description center-align">
-                
-                <span id="subtitle"></span>
-                <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
-                <script>
-                    var typed = new Typed("#subtitle", {
-                        strings: [ 
-                            
-                                "从来没有真正的绝境, 只有心灵的迷途",
-                            
-                                "Never really desperate, only the lost of the soul",
-                            
-                        ],
-                        startDelay: 300,
-                        typeSpeed: 100,
-                        loop: true,
-                        backSpeed: 50,
-                        showCursor: true
-                    });
-                </script>
-                
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description post-title">3 Netty简介</h1>
+                </div>
+                <div class="post-info">
+                    
+                        <div class="post-date info-break-policy">
+                            <i class="far fa-check-circle"></i>发布日期:&nbsp;&nbsp;
+                            2021-08-29
+                        </div>
+                    
+
+                    
+                        <div class="post-date info-break-policy">
+                            | <i class="fas fa-history fa-fw"></i>更新日期:&nbsp;&nbsp;
+                            2021-08-29
+                        </div>
+                    
+
+                    
+                        <div class="info-break-policy">
+                            | <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                            537
+                        </div>
+                    
+
+                    
+
+                    
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 
-<script>
-    // 每天切换 banner 图.  Switch banner image every day.
-    var bannerUrl = "/medias/banner/" + new Date().getDay() + '.jpg';
-    $('.bg-cover').css('background-image', 'url(' + bannerUrl + ')');
-</script>
 
 
-    </div>
-</div>
+<main class="post-container content">
 
-<main class="content">
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
 
-    <div id="aboutme" class="container about-container">
-        <div class="card">
-            <div class="card-content">
-                <div class="row">
-                    <div class="post-statis col l4 hide-on-med-and-down" data-aos="zoom-in-right">
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
                         
-<div class="statis">
-    <span class="count"><a href="/">14</a></span>
-    <span class="name">文章</span>
-</div>
-
-
-
-<div class="statis">
-    <span class="count"><a href="/categories">2</a></span>
-    <span class="name">分类</span>
-</div>
-
-
-
-<div class="statis">
-    <span class="count"><a href="/tags">2</a></span>
-    <span class="name">标签</span>
-</div>
-
-
+                            <a href="/tags/netty/">
+                                <span class="chip bg-color">netty</span>
+                            </a>
+                        
                     </div>
-                    <div class="col s12 m12 l4">
-                        <div class="profile center-align">
-                            <div class="avatar">
-                                <img src="/medias/avatar.png" alt="pounds"
-                                     class="circle responsive-img avatar-img">
-                            </div>
-                            <div class="author">
-                                <div class="post-statis hide-on-large-only" data-aos="zoom-in-right">
-                                    
-<div class="statis">
-    <span class="count"><a href="/">14</a></span>
-    <span class="name">文章</span>
-</div>
-
-
-
-<div class="statis">
-    <span class="count"><a href="/categories">2</a></span>
-    <span class="name">分类</span>
-</div>
-
-
-
-<div class="statis">
-    <span class="count"><a href="/tags">2</a></span>
-    <span class="name">标签</span>
-</div>
-
-
-                                </div>
-                                <div class="title">pounds</div>
-                                <div class="career">Software Engineer</div>
-                                <div class="social-link hide-on-large-only" data-aos="zoom-in-left">
-                                    
-    <a href="https://github.com/pounds018" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
-
-
-
-    <a href="mailto:1003937793@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1003937793" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1003937793" data-position="top" data-delay="50">
-        <i class="fab fa-qq"></i>
-    </a>
-
-
-
-
-
-
-
-
-                                </div>
-                            </div>
-                        </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/netty%E5%AE%9E%E6%88%98/" class="post-category">
+                                netty实战
+                            </a>
+                        
                     </div>
-                    <div class="col l4 hide-on-med-and-down" data-aos="zoom-in-left">
-                        <div class="social-link">
+                    
+                </div>
+            </div>
+        </div>
+        <!-- 文章顶部下划线 -->
+        <!-- <hr class="clearfix"> -->
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介:"></a>1. 简介:</h2><ol>
+<li>Netty是由JBoss提供的一个java网络开源框架</li>
+<li>Netty是一个异步的,基于事件驱动的网络框架,用来快速开发高性能,高可用的IO程序</li>
+<li>Netty主要是针对tcp协议下,面向Clients端的高并发应用程序,或者是Peer-To-Peer场景下的大量数据传输应用</li>
+<li>Netty本质就是java的NIO框架,在NIO的基础上进行了大量的封装,让开发者将精力集中于业务代码而不是网络通信,多使用于服务器通信相关的多种场景</li>
+</ol>
+<h2 id="2-Netty架构"><a href="#2-Netty架构" class="headerlink" title="2. Netty架构:"></a>2. Netty架构:</h2><p>  <img src="/Netty/netty%E5%AE%9E%E6%88%98/3_Netty%E7%AE%80%E4%BB%8B/Netty%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt="netty架构图"></p>
+<h2 id="3-Netty特性"><a href="#3-Netty特性" class="headerlink" title="3. Netty特性:"></a>3. Netty特性:</h2><ol>
+<li>NIO的弊端:<ul>
+<li>NIO类库和api繁杂,使用麻烦,需要开发人员熟练掌握NIO技术</li>
+<li>需要具备其他额外的技能,否则无法写出高性能的NIO程序,比如: reactor模式就需要多线程技术实现.</li>
+<li>开发工作量和难度都非常大</li>
+<li>NIO有bug: 比如 epoll bug,会到这selector轮空,打满cpu.</li>
+</ul>
+</li>
+<li>优点:  <ul>
+<li><code>设计</code>: 统一的API,支持多种传输类型,支持阻塞与非阻塞I/O模式,简单而强大的线程模型,支持真正的无连接数据报套接字,链接逻辑组件以支持复用</li>
+<li><code>易用性</code>: 大量的javadoc文档和大量的示例集,不需要超过jdk1.6+的依赖</li>
+<li><code>性能</code>: 拥有比java的核心api更高的吞吐量以及更低的延迟; 得益于池化和复用,拥有更低的资源消耗;更少的内存复制</li>
+<li><code>健壮性</code>: 不会因为慢速,快速或者超载的链接导致OOM;消除在高速网络NIO应用程序常见的不公平读写比率</li>
+<li><code>安全性</code>: 支持完整的SSL/TLS以及startTLS;可用于受限环境下,比如 APPLET 和 OSGI</li>
+<li><code>社区驱动</code>: 社区活跃,发布快速而频繁</li>
+</ul>
+</li>
+</ol>
+<h2 id="4-应用场景"><a href="#4-应用场景" class="headerlink" title="4. 应用场景:"></a>4. 应用场景:</h2><ul>
+<li>互联网行业: 分布式系统,服务与服务之间的rpc远程调用的底层,通常就是netty这种异步高可用通信框架,比如: <code>DUBBO</code></li>
+<li>游戏行业: 使用netty作为聊天系统的通信组件</li>
+<li>等</li>
+</ul>
+
+                
+            </div>
+            <!-- 文章底部下划线 -->
+<!--            <hr/>-->
+
+            
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
                             
-    <a href="https://github.com/pounds018" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
-
-
-
-    <a href="mailto:1003937793@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
-
-
-
-
-
-
-
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1003937793" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1003937793" data-position="top" data-delay="50">
-        <i class="fab fa-qq"></i>
-    </a>
-
-
-
-
-
-
-
-
+                                <a href="/tags/netty/">
+                                    <span class="chip bg-color">netty</span>
+                                </a>
+                            
                         </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/Netty/netty%E5%AE%9E%E6%88%98/4_Netty%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="4 Netty线程模型">
+                        
+                        <span class="card-title">4 Netty线程模型</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-08-29
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/netty%E5%AE%9E%E6%88%98/" class="post-category">
+                                    netty实战
+                                </a>
+                            
+                            
+                        </span>
                     </div>
                 </div>
-
-                <div class="introduction center-align" data-aos="fade-up">If you wish to succeed, you should use persistence as your good friend, experience as your reference, prudence as your brother and hope as your sentry.</div>
-
-                <style type="text/css">
-    #posts-chart,
-    #categories-chart,
-    #tags-chart {
-        width: 100%;
-        height: 300px;
-        margin: 0.5rem auto;
-        padding: 0.5rem;
-    }
-</style>
-
-<div id="postCharts" class="post-charts">
-    <div class="title center-align" data-aos="zoom-in-up">
-        <i class="far fa-bar-chart"></i>&nbsp;&nbsp;文章统计图
-    </div>
-    <div class="row">
-        <div class="chart col s12 m6 l4" data-aos="zoom-in-up">
-            <div id="posts-chart"></div>
-        </div>
-
-        <div class="chart col s12 m6 l4" data-aos="zoom-in-up">
-            <div id="categories-chart"></div>
-        </div>
-
-        <div class="chart col s12 m6 l4" data-aos="zoom-in-up">
-            <div id="tags-chart"></div>
-        </div>
-    </div>
-</div>
-
-<script type="text/javascript" src="/libs/echarts/echarts.min.js"></script>
-<script>
-    let postsChart = echarts.init(document.getElementById('posts-chart'));
-    let categoriesChart = echarts.init(document.getElementById('categories-chart'));
-    let tagsChart = echarts.init(document.getElementById('tags-chart'));
-
-    
-
-    let postsOption = {
-        title: {
-            text: '文章发布统计图',
-            top: -5,
-            x: 'center'
-        },
-        tooltip: {
-            trigger: 'axis'
-        },
-        xAxis: {
-            type: 'category',
-            data: ["2020-08","2020-09","2020-10","2020-11","2020-12","2021-01","2021-02","2021-03","2021-04","2021-05","2021-06","2021-07","2021-08"]
-        },
-        yAxis: {
-            type: 'value',
-        },
-        series: [
-            {
-                name: '文章篇数',
-                type: 'line',
-                color: ['#6772e5'],
-                data: [0,0,0,0,0,0,0,0,0,0,0,0,14],
-                markPoint: {
-                    symbolSize: 45,
-                    color: ['#fa755a','#3ecf8e','#82d3f4'],
-                    data: [{
-                        type: 'max',
-                        itemStyle: {color: ['#3ecf8e']},
-                        name: '最大值'
-                    }, {
-                        type: 'min',
-                        itemStyle: {color: ['#fa755a']},
-                        name: '最小值'
-                    }]
-                },
-                markLine: {
-                    itemStyle: {color: ['#ab47bc']},
-                    data: [
-                        {type: 'average', name: '平均值'}
-                    ]
-                }
-            }
-        ]
-    };
-
-    
-
-    let categoriesOption = {
-        title: {
-            text: '文章分类统计图',
-            top: -4,
-            x: 'center'
-        },
-        tooltip: {
-            trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        series: [
-            {
-                name: '分类',
-                type: 'pie',
-                radius: '50%',
-                color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [{"name":"MySQL是怎样运行的","value":8},{"name":"netty实战","value":5}],
-                itemStyle: {
-                    emphasis: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                }
-            }
-        ]
-    };
-
-    
-
-    let tagsOption = {
-        title: {
-            text: 'TOP10 标签统计图',
-            top: -5,
-            x: 'center'
-        },
-        tooltip: {},
-        xAxis: [
-            {
-                type: 'category',
-                data: ["MySQL","netty"]
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value'
-            }
-        ],
-        series: [
-            {
-                type: 'bar',
-                color: ['#82d3f4'],
-                barWidth : 18,
-                data: [8,5],
-                markPoint: {
-                    symbolSize: 45,
-                    data: [{
-                        type: 'max',
-                        itemStyle: {color: ['#3ecf8e']},
-                        name: '最大值'
-                    }, {
-                        type: 'min',
-                        itemStyle: {color: ['#fa755a']},
-                        name: '最小值'
-                    }],
-                },
-                markLine: {
-                    itemStyle: {color: ['#ab47bc']},
-                    data: [
-                        {type: 'average', name: '平均值'}
-                    ]
-                }
-            }
-        ]
-    };
-
-    // render the charts
-    postsChart.setOption(postsOption);
-    categoriesChart.setOption(categoriesOption);
-    tagsChart.setOption(tagsOption);
-</script>
-
-
                 
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/netty/">
+                        <span class="chip bg-color">netty</span>
+                    </a>
+                    
+                </div>
                 
-<div class="my-projects">
-    <div class="title center-align" data-aos="zoom-in-up">
-        <i class="fas fa-gift"></i>&nbsp;&nbsp;我的项目
-    </div>
-    <div class="row">
+            </div>
+        </div>
         
         
-        <div class="col s12 m6 l4" data-aos="fade-up">
-            <div class="info center-align">
-                <a href="http://github.com/blinkfox/hexo-theme-matery" class="icon"
-                   style="background: linear-gradient(to bottom right, #66BB6A 0%, #81C784 100%)" target="_blank">
-                    <i class="fas fa-file-alt"></i>
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/Netty/netty%E5%AE%9E%E6%88%98/2_%E9%9B%B6%E6%8B%B7%E8%B4%9D/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="2 零拷贝">
+                        
+                        <span class="card-title">2 零拷贝</span>
+                    </div>
                 </a>
-                <div class="info-title">
-                    <a href="http://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-29
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/netty%E5%AE%9E%E6%88%98/" class="post-category">
+                                    netty实战
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
                 </div>
-                <div class="info-desc">This is a Hexo blog theme with &#39;Material Design&#39; and responsive design.</div>
-            </div>
-        </div>
-        
-        <div class="col s12 m6 l4" data-aos="fade-up">
-            <div class="info center-align">
-                <a href="https://github.com/blinkfox/fenix" class="icon"
-                   style="background: linear-gradient(to bottom right, #F06292 0%, #EF5350 100%)" target="_blank">
-                    <i class="fas fa-database"></i>
-                </a>
-                <div class="info-title">
-                    <a href="https://github.com/blinkfox/fenix" target="_blank">Fenix</a>
-                </div>
-                <div class="info-desc">这是 Spring Data JPA 复杂或动态 SQL 查询的扩展库。</div>
-            </div>
-        </div>
-        
-        <div class="col s12 m6 l4" data-aos="fade-up">
-            <div class="info center-align">
-                <a href="https://github.com/blinkfox/typora-vue-theme" class="icon"
-                   style="background: linear-gradient(to bottom right, #29B6F6 0%, #1E88E5 100%)" target="_blank">
-                    <i class="fas fa-file-alt"></i>
-                </a>
-                <div class="info-title">
-                    <a href="https://github.com/blinkfox/typora-vue-theme" target="_blank">typora-vue-theme</a>
-                </div>
-                <div class="info-desc">This is a typora theme inspired by Vue document style.</div>
-            </div>
-        </div>
-        
-        
-    </div>
-</div>
-
                 
-
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/netty/">
+                        <span class="chip bg-color">netty</span>
+                    </a>
+                    
+                </div>
                 
-                
-<div class="my-skills">
-    <div class="title center-align" data-aos="zoom-in-up">
-        <i class="fas fa-wrench"></i>&nbsp;&nbsp;我的技能
-    </div>
-    <div class="row">
-        
-        
-        
-        <div class="col s12 m6 l6" data-aos="fade-up">
-            <div class="skillbar">
-                <div class="skillbar-title"
-                     style="background: linear-gradient(to right, #FF0066 0%, #FF00CC 100%); width: 85%">
-                    <span>Java</span>
-                </div>
-                <div class="skill-bar-percent">85%</div>
             </div>
         </div>
-        
-        
-        <div class="col s12 m6 l6" data-aos="fade-up">
-            <div class="skillbar">
-                <div class="skillbar-title"
-                     style="background: linear-gradient(to right, #9900FF 0%, #CC66FF 100%); width: 80%">
-                    <span>JavaScript</span>
-                </div>
-                <div class="skill-bar-percent">80%</div>
-            </div>
-        </div>
-        
-        
-        <div class="col s12 m6 l6" data-aos="fade-up">
-            <div class="skillbar">
-                <div class="skillbar-title"
-                     style="background: linear-gradient(to right, #2196F3 0%, #42A5F5 100%); width: 80%">
-                    <span>HTML5</span>
-                </div>
-                <div class="skill-bar-percent">80%</div>
-            </div>
-        </div>
-        
-        
-        <div class="col s12 m6 l6" data-aos="fade-up">
-            <div class="skillbar">
-                <div class="skillbar-title"
-                     style="background: linear-gradient(to right, #00BCD4 0%, #80DEEA 100%); width: 70%">
-                    <span>CSS</span>
-                </div>
-                <div class="skill-bar-percent">70%</div>
-            </div>
-        </div>
-        
-        
-        <div class="col s12 m6 l6" data-aos="fade-up">
-            <div class="skillbar">
-                <div class="skillbar-title"
-                     style="background: linear-gradient(to right, #4CAF50 0%, #81C784 100%); width: 90%">
-                    <span>SQL</span>
-                </div>
-                <div class="skill-bar-percent">90%</div>
-            </div>
-        </div>
-        
-        
-        <div class="col s12 m6 l6" data-aos="fade-up">
-            <div class="skillbar">
-                <div class="skillbar-title"
-                     style="background: linear-gradient(to right, #FFEB3B 0%, #FFF176 100%); width: 75%">
-                    <span>程序设计</span>
-                </div>
-                <div class="skill-bar-percent">75%</div>
-            </div>
-        </div>
-        
         
     </div>
-
-    
-
-    
-    <div class="other-skills chip-container" data-aos="zoom-in-up">
-        <div class="sub-title center-align"><i class="fa fa-book"></i>&nbsp;&nbsp;其他技能</div>
-        <div class="tag-chips center-align">
-            
-            
-            <a href="/tags/MySQL/">
-                <span class="chip center-align waves-effect waves-light chip-default">MySQL</span>
-            </a>
-            
-            
-            
-            <a href="/tags/netty/">
-                <span class="chip center-align waves-effect waves-light chip-default">netty</span>
-            </a>
-            
-            
-        </div>
-    </div>
-    
+</article>
 
 </div>
 
-                
-
-                
-                
-<div id="myGallery" class="my-gallery">
-    <div class="title center-align" data-aos="zoom-in-up">
-        <i class="far fa-image"></i>&nbsp;&nbsp;相册
-    </div>
-    <div class="row">
-        
-        
-        <div class="photo col s12 m6 l4" data-aos="fade-up">
-            <div class="img-item" data-src="/medias/featureimages/0.jpg">
-                <img src="/medias/featureimages/0.jpg" class="responsive-img">
-            </div>
-        </div>
-        
-        <div class="photo col s12 m6 l4" data-aos="fade-up">
-            <div class="img-item" data-src="/medias/featureimages/1.jpg">
-                <img src="/medias/featureimages/1.jpg" class="responsive-img">
-            </div>
-        </div>
-        
-        <div class="photo col s12 m6 l4" data-aos="fade-up">
-            <div class="img-item" data-src="/medias/featureimages/2.jpg">
-                <img src="/medias/featureimages/2.jpg" class="responsive-img">
-            </div>
-        </div>
-        
-        
-    </div>
-</div>
 
 <script>
-    $(function () {
-        let animateClass = 'animated pulse';
-        $('#myGallery .photo').hover(function () {
-            $(this).addClass(animateClass);
-        }, function () {
-            $(this).removeClass(animateClass);
-        });
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE' || selection.getRangeAt(0).commonAncestorContainer.nodeName === 'CODE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: pounds<br />'
+            + '文章作者: pounds<br />'
+            + '文章链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
     });
 </script>
 
-                
-                
-                
-                
-            </div>
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
         </div>
     </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
 </main>
+
+
 
 
     <footer class="page-footer bg-color">
