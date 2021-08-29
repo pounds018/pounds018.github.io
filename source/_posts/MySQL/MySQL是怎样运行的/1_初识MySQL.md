@@ -1,6 +1,6 @@
 ---
 title: 1 初识MySQL
-date: 2021-08-29 17:14:00
+date: 2021-08-06 17:14:00
 tags:
     - MySQL
 categories:
