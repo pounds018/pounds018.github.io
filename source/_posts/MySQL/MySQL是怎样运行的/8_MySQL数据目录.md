@@ -1,5 +1,5 @@
 ---
-title: 8_MySQL数据目录
+title: 8 MySQL数据目录
 date: 2021-08-29 00:29:54
 tags:
     - MySQL

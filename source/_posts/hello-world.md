@@ -107,3 +107,13 @@ func transactionDemo() {
 	fmt.Println("exec trans success!")
 }
 ```
+
+{%r%}
+紅色
+{%endr%}
+{%g%}
+綠色
+{%endg%}
+{%y%}
+黃色
+{%endy%}
