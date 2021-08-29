@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="5 InnoDB数据页结构, pounds">
+    <meta name="keywords" content="3 字符集和比较规则, pounds">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>5 InnoDB数据页结构 | pounds</title>
+    <title>3 字符集和比较规则 | pounds</title>
     <link rel="icon" type="image/svg+xml" href="/medias/surprise-regular.svg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -296,12 +296,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description post-title">5 InnoDB数据页结构</h1>
+                    <h1 class="description post-title">3 字符集和比较规则</h1>
                 </div>
                 <div class="post-info">
                     
@@ -321,7 +321,7 @@
                     
                         <div class="info-break-policy">
                             | <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                            3.9k
+                            2.3k
                         </div>
                     
 
@@ -476,424 +476,226 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="5-1-不同类型的页简介"><a href="#5-1-不同类型的页简介" class="headerlink" title="5.1 不同类型的页简介:"></a>5.1 不同类型的页简介:</h2><p>页是<code>InnoDB存储引擎</code>管理存储空间的基本单位, 一个页的基本单位是16KB.</p>
-<p>InnoDB为了不同目的而设计了多种不同类型的页,比如:  <code>存放表空间头部信息的页</code>, <code>存放change buffer 信息的页</code>,<code>存放INODE信息的页</code>,<code>存放undo日志信息的页</code>等等</p>
-<p>本章节主要是介绍<code>存放表中记录的页</code>,官方称之为 : <code>索引页index</code>,为了方便理解 称之为 <code>数据页</code>.</p>
-<h2 id="5-2-数据页结构简介"><a href="#5-2-数据页结构简介" class="headerlink" title="5.2 数据页结构简介:"></a>5.2 数据页结构简介:</h2><p><code>Mysql</code>将数据页这块16KB大小的存储空间大致被划分成了 7个部分,不同部分有不同的功能.  如图所示: </p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210809223800797.png" alt="单页数据页构成图"></p>
-<p>各部分大致存储什么内容,如下表所示:</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>中文名</th>
-<th>占用空间(字节)</th>
-<th>功能概述</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>File Header</td>
-<td>文件头部</td>
-<td>38</td>
-<td>页的通用信息</td>
-</tr>
-<tr>
-<td>Page Header</td>
-<td>页面头部</td>
-<td>56</td>
-<td>数据页的专有信息</td>
-</tr>
-<tr>
-<td>Infimum+Supremum</td>
-<td>页面中最小记录和最大记录</td>
-<td>26</td>
-<td>两个虚拟记录</td>
-</tr>
-<tr>
-<td>User Record</td>
-<td>用户记录</td>
-<td>不确定</td>
-<td>用户存放的记录</td>
-</tr>
-<tr>
-<td>Free Space</td>
-<td>空闲空间</td>
-<td>不确定</td>
-<td>页中尚未使用的空间</td>
-</tr>
-<tr>
-<td>Page Directory</td>
-<td>页目录</td>
-<td>不确定</td>
-<td>页中某些记录的相对位置</td>
-</tr>
-<tr>
-<td>File Trailer</td>
-<td>文件尾部</td>
-<td>8</td>
-<td>校验页是否完整</td>
-</tr>
-</tbody></table>
-<h2 id="5-3-记录在页中的存储"><a href="#5-3-记录在页中的存储" class="headerlink" title="5.3 记录在页中的存储:"></a>5.3 记录在页中的存储:</h2><p>在数据页的7个部分中,用户自己存入的记录会按照指定的行格式存储到<code>User Records</code>部分中.</p>
-<p>在数据页生成的时候实际上是没有<code>User Records</code>这部分的,每当一条数据插入进来的时候,就会去<code>Free Space</code>部分申请记录需要的空间,然后与之前的<code>User Records</code>合并.当<code>Free Space</code>使用完之后就会去申请新的数据页.</p>
-<p>数据存入大致流程:</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210809223836259.png" alt="数据存入数据页大致流程"></p>
-<p><strong>示例数据:</strong></p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> page_demo <span class="token punctuation">(</span>
-	c1 <span class="token keyword">INT</span><span class="token punctuation">,</span>
-	c2 <span class="token keyword">INT</span><span class="token punctuation">,</span>
-    c3 <span class="token keyword">VARCHAR</span><span class="token punctuation">(</span><span class="token number">10000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-    <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span><span class="token punctuation">(</span>c1<span class="token punctuation">)</span>
-<span class="token punctuation">)</span><span class="token keyword">CHARSET</span><span class="token operator">=</span>ascii ROW_FORMART<span class="token operator">=</span>COMPACT<span class="token punctuation">;</span>
-
-<span class="token keyword">INSERT</span> <span class="token keyword">INTO</span> page_demo <span class="token keyword">VALUES</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token string">'aaaa'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token string">'bbbb'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">300</span><span class="token punctuation">,</span><span class="token string">'cccc'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">400</span><span class="token punctuation">,</span><span class="token string">'dddd'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><code>COMPACT</code>行格式中,<code>记录头信息</code>包含以下内容:</p>
-<table>
-<thead>
-<tr>
-<th>名称</th>
-<th>大小(位)</th>
-<th>意义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>预留位1</td>
-<td>1</td>
-<td>没有使用</td>
-</tr>
-<tr>
-<td>预留位2</td>
-<td>1</td>
-<td>没有使用</td>
-</tr>
-<tr>
-<td>delete_flag</td>
-<td>1</td>
-<td>标记记录是否被删除</td>
-</tr>
-<tr>
-<td>min_rec_flag</td>
-<td>1</td>
-<td>B+树每层非叶子结点中最小的目录项记录都会添加这个标记</td>
-</tr>
-<tr>
-<td>n_owned</td>
-<td>4</td>
-<td>每页数据都会被分成若干组,每个组都有个组长,组长记录的n_owned值表示该组人员数量</td>
-</tr>
-<tr>
-<td>heap_no</td>
-<td>13</td>
-<td>表示当前记录在页面堆中的相对位置</td>
-</tr>
-<tr>
-<td>record_type</td>
-<td>3</td>
-<td>表示当前记录的类型,0(普通记录),1(B+树非叶子节点的目录项记录),2(Infimum记录),3(Supremum记录)</td>
-</tr>
-<tr>
-<td>next_record</td>
-<td>16</td>
-<td>表示下一条记录的相对位置</td>
-</tr>
-</tbody></table>
-<p>为了屏蔽干扰,后续示例数据行格式图都只给出<code>记录头信息</code>和<code>数据真实部分</code>,如图:</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210809232737709.png" alt="记录头与真实数据部分"></p>
-<p>向<code>page_demo</code>表插入四条数据之后,<code>User Records</code>部分如图所示: </p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210809233733977.png" alt="插入4条示例数据后记录示意图"></p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210809235722131.png" alt="实际数据在磁盘中的结构"></p>
-<p><font color="red"><strong>从上图可以看出来,记录在数据页中是按照主键大小依次排列紧挨着排列的</strong> </font></p>
-<h3 id="5-3-1-记录头信息各个字段的含义"><a href="#5-3-1-记录头信息各个字段的含义" class="headerlink" title="5.3.1 记录头信息各个字段的含义:"></a>5.3.1 记录头信息各个字段的含义:</h3><h4 id="1-delete-flag"><a href="#1-delete-flag" class="headerlink" title="1. delete_flag:"></a>1. delete_flag:</h4><p><code>delete_flag</code>: 是用于标记该记录是否被删除,占用1位, <code>值为0表示记录没有被删除</code>,值 为1表示记录被删除.</p>
-<p><code>MySQL</code>在删除数据的时候,实际上采用了<code>逻辑删除</code>的思想, 通过标记位标记记录是否被删除,当有新记录要插入进来的时候,复用这些被删除记录占用的空间,而不是将数据从磁盘中删除掉,然后对所有记录按照主键进行重排序.这样做的好处是<font color="#green"><strong>避免了重排序和空间开辟的性能消耗,又不浪费空间</strong>&nbsp;</font>.</p>
-<p>被删除的数据还会通过记录头中的<code>next_record</code>将当前页中被删除的记录形成一个链表.</p>
-<h4 id="2-min-rec-flag"><a href="#2-min-rec-flag" class="headerlink" title="2. min_rec_flag:"></a>2. min_rec_flag:</h4><p><code>min_rec_flag</code>: B+树每层非叶子结点中的最小的目录项记录都会添加这个标记.</p>
-<h4 id="3-o-owned"><a href="#3-o-owned" class="headerlink" title="3. o_owned:"></a>3. o_owned:</h4><p><code>o_owned</code>: <code>Mysql</code>会将数据页中的记录按照一定的规则分成多个小组,每个小组中主键值最大的记录就是组长,只有组长的记录头信息中的<code>o_owned</code>字段记录着这个分组中有多少个成员(包括组长).</p>
-<h4 id="4-heap-no"><a href="#4-heap-no" class="headerlink" title="4. heap_no:"></a>4. heap_no:</h4><p>记录在数据页中真实的情况是按照主键大小紧密无间的排列,<code>MySQL</code>将这种结构称为 <code>heap堆</code>.</p>
-<p><code>heap_no字段</code>: 表示记录在堆中的编号,即堆中第几条记录.</p>
-<p>两个特殊的记录:</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210809235809341.png" alt="Infimum和Superemum"></p>
+                <h2 id="3-1-字符集和比较规则"><a href="#3-1-字符集和比较规则" class="headerlink" title="3.1 字符集和比较规则:"></a>3.1 字符集和比较规则:</h2><h3 id="3-1-1-字符集介绍"><a href="#3-1-1-字符集介绍" class="headerlink" title="3.1.1 字符集介绍:"></a>3.1.1 字符集介绍:</h3><p>数据在计算机中实际上是以二进制的关系存储的.</p>
+<p><strong>字符集: 是描述某个字符范围的编码规则</strong></p>
+<p>主要是解决两个问题:</p>
 <ul>
-<li><code>Infimum记录</code>: <code>MySQL</code>自动给数据页中插入的<code>Mysql规定的当前页</code>最小的记录. <font color="yellow"><strong>并且<code>MySQL</code><strong>规定</strong> <code>Infimum记录</code>记录头信息中<code>heap_no字段值为0</code>,<code>next_record</code>永远指向用户自己添加的记录中主键最小的那一条记录.</strong> </font></li>
-<li><code>Supremum记录</code>: <code>MySQL</code>自动给数据页中插入的<code>MySQL规定的当前页面</code>最大的记录.<font color="yellow"><strong>并且<code>MySQL</code><strong>规定</strong>,<code>Supremum记录</code>记录头信息中<code>heap_no字段的值为1</code>, 用户自己添加的记录中主键最大的那一条记录的<code>next_record</code>永远指向<code>Supremum记录</code></strong> </font></li>
+<li>界定字符的范围,就是要将哪些字符转换成二进制数据</li>
+<li>二进制数据和字符之间如何转换,即 编码解码过程</li>
 </ul>
+<h3 id="3-1-2-比较规则简介"><a href="#3-1-2-比较规则简介" class="headerlink" title="3.1.2 比较规则简介:"></a>3.1.2 比较规则简介:</h3><p><strong>比较规则:</strong> 即确定两个字符之间的大小关系.不同字符集在<code>mysql</code>中的比较规则也是不相同的</p>
+<h3 id="3-1-3-一些重要的字符集"><a href="#3-1-3-一些重要的字符集" class="headerlink" title="3.1.3 一些重要的字符集:"></a>3.1.3 一些重要的字符集:</h3><ol>
+<li><p><code>ASCⅡ字符集</code>: 共<code>128</code>个字符,包括空格,标点,数字,大小写字母和一些不可见的字符.<code>一个字节</code>就可以表示所有的<code>ASCⅡ字符</code></p>
+</li>
+<li><p><code>ISO 8859-1字符集</code>:共<code>256</code>个字符,在<code>ASCⅡ</code>的基础上增加了<code>128</code>个西欧常用字符. 也可以使用<code>一个字节</code>表示所有字符</p>
+</li>
+<li><p><code>GB2312字符集</code>: 收录了 <code>汉字</code>以及<code>拉丁字母</code>,<code>希腊字母</code>,<code>日本平假名,片假名</code>,<code>俄语西里尔字母</code>;汉字共<code>6763</code>个,其他文字符号<code>682</code>个. <code>GB2312</code>也兼容了<code>ASCⅡ字符</code>,所以<code>当GB2312字符在ASCⅡ字符范围内,使用一个字节;不在就是用两个字节进行编码</code></p>
+</li>
+<li><p><code>GBK字符集</code>: 对<code>GB2312字符集</code>在字符范围上进行了扩充,编码方式与<code>GB2312字符集</code>相同</p>
+</li>
+<li><p><code>UTF-8字符集</code>: 字符范围几乎涵盖当今世界各个国家/地区所使用的字符.编码方式兼容<code>ASCⅡ</code>,采用变长编码方式,一个<code>UTF8字符</code>可能需要<code>1~4个字节</code></p>
 <blockquote>
-<ol>
-<li>这两条特殊记录共同组成了数据页中<code>Infimum+Spremium</code>部分</li>
-<li>对于一条完整的记录来说,比较记录的大小就是比较主键的大小. 一条完整的记录,一条完整的记录,一条完整的记录</li>
-</ol>
+<p><code>UTF-8</code>实际上是<code>Unicode字符集</code>的一种编码方案.</p>
 </blockquote>
-<p>用户自己插入的记录是普通记录,普通记录根据记录的大小从2开始递增作为其记录头信息<code>heap_no字段</code>的值.</p>
-<p><font color="red">**&nbsp;<code>heap_no字段</code>因为是表示记录在堆中的编号,一旦在分配了之后就不会改变,哪怕那条记录被删除了**&nbsp;</font></p>
-<h4 id="5-record-type"><a href="#5-record-type" class="headerlink" title="5. record_type:"></a>5. record_type:</h4><p><code>record_type</code>: 表示当前记录的类型.<code>MySQL</code>中一共4中类型 — 0表示普通类型,1表示B+树非叶子结点的目录项记录,2表示Infimum记录,3表示Supremum记录.</p>
-<h4 id="6-next-record"><a href="#6-next-record" class="headerlink" title="6. next_record:"></a>6. next_record:</h4><p><code>next_record</code>: 表示当前记录的真实数据到下一条记录的真实数据的距离.</p>
-<p><code>next_record</code>值的符号表示方向,如果值为负数表示下一条记录的真实数据在当前记录真实数据的前面,如果值为整数,表示下一条记录的真实数据在当前记录的真实数据的后面.</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210810002933353.png" alt="记录在数据页中形成的单链表"></p>
-<p>为什么<code>next_word</code>表示的是 到下一条记录真实数据的距离,而不是下一条记录开始的位置?</p>
-<p>因为<code>next_record</code>指向这里刚刚好,向前就是记录的头信息,向后就是记录的真实数据,而且行格式中,<code>变长字段列表</code>和<code>null值列表</code>都是按照逆序存放的,这样可以使记录中位置靠前的字段和他们对应的字段长度信息在内存中的距离更近,可能会提高高速缓存的命中率</p>
-<h2 id="5-4-Page-Directory"><a href="#5-4-Page-Directory" class="headerlink" title="5.4 Page Directory:"></a>5.4 Page Directory:</h2><p>由于<code>Mysql</code>中的记录是按照主键值从小到大排列的,通过记录头信息中<code>next_record</code>字段可以定位到下一个记录,从而形成一个单向链表,单向链表在查找的时候效率不高,于是<code>Mysql</code>通过目录的形式快速定位某个区间,然后逐一去排查的方式来快输定位.</p>
-<h3 id="5-4-1-实现过程如下"><a href="#5-4-1-实现过程如下" class="headerlink" title="5.4.1 实现过程如下:"></a>5.4.1 实现过程如下:</h3><ol>
-<li><p>将所有记录(包含: <code>Infimum</code>和<code>Spremum</code>)划分成多个小组.</p>
 </li>
-<li><p>因为每个记录都是按照主键值从小到大依次排列,将小组中最后一条记录选为目录项(即组长),在其记录头信息的<code>o_owned</code>字段中记录该小组有多少条记录</p>
-</li>
-<li><p>将目录项在页面中的地址偏移量(就是该记录的真实数据与页面第0个字节之间的距离),单独提取出来,按在分组的先后顺序从最靠近页尾部的地方开始存放起来.存放目录项地址偏移量的地方被称为<code>槽</code>,是一个2字节大小的空间.</p>
-</li>
-<li><p>这些槽构成页面中的<code>Page Directory</code>部分.</p>
-<blockquote>
-<p>对于小组,<code>mysql</code>规定: </p>
-<ol>
-<li><code>Infimum</code>记录,单独为一个小组,即 <code>Infimum</code>记录所在的小组只能有一条记录</li>
-<li><code>Spremum</code>记录所在的小组记录条数只能在 <code>1~8</code>条之间</li>
-<li>其他小组记录条数只能在<code>4~8</code>条之间</li>
 </ol>
-<p>关于槽:</p>
+<h2 id="3-2-MySQL支持的字符集和比较规则"><a href="#3-2-MySQL支持的字符集和比较规则" class="headerlink" title="3.2 MySQL支持的字符集和比较规则"></a>3.2 MySQL支持的字符集和比较规则</h2><h3 id="3-2-1-utf8和utf8mb4"><a href="#3-2-1-utf8和utf8mb4" class="headerlink" title="3.2.1 utf8和utf8mb4:"></a>3.2.1 <code>utf8</code>和<code>utf8mb4</code>:</h3><p>由于日常常用的字符使用<code>1~3</code>个字节基本就可以表示,为了提高编码效率,MySQL在处理<code>UTF8字符集</code>的时候从字符集名称上做了区分:</p>
 <ul>
-<li>槽的顺序: 分组的时候先从主键值小的记录开始向后分,槽表示的记录越小就越靠近<code>File Tailer</code>部分</li>
-<li>槽如何排列的: <code>Page Directory</code>部分实际上就是一个<code>指针数组</code>,数组中的元素连续分布. </li>
+<li><code>utf8mb3</code>: mysql中<code>utf8</code>的别名,通常使用的<code>uft8</code>字符集就是这种,只使用<code>1~3个字节</code>表示字符.</li>
+<li><code>utf8mb4</code>: 真正意义上的<code>utf8</code>字符集,使用<code>1~4</code>个字节表示字符. <code>可以存储emoji表情</code></li>
 </ul>
-<p>为什么槽只需要两个字节:</p>
-<p>因为页面大小为16KB,范围在<code>0 ~ 16384</code>字节之间,2个字节可以表示的范围在 <code>0 ~ 65535</code>之间,所以两个字节够了.</p>
-</blockquote>
-</li>
-</ol>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210811224713628.png" alt="页目录中的槽指向分组中主键最大的元素"></p>
-<h3 id="5-4-2-分组的过程"><a href="#5-4-2-分组的过程" class="headerlink" title="5.4.2 分组的过程:"></a>5.4.2 分组的过程:</h3><ol>
-<li><p>数据页在还没有插入记录的时候,实际上只有两个分组,一个 <code>Infimum</code>代表的分组和<code>Spremum</code>代表的分组.</p>
-<p>页目录也只有两个槽,分别指向<code>Infimum</code>和<code>Spremum</code>的真实数据开始的位置.</p>
-</li>
-<li><p>之后每插入一个记录都会从页目录中找到槽指向记录的主键值比待插入主键值大但是差值最小的槽.然后将槽指向记录的记录头信息中<code>o_owned</code>字段+1,表示本组新增一条记录,直到该组中记录数等于8个.</p>
-</li>
-<li><p>当小组中记录数目等于8个的时候,再向组内插入记录,该组就会分裂成两个小组,一个组4个一个组5个元素.然后给新增的小组分配一个新的槽位,来记录新增小组中组长真实数据的地址偏移量.</p>
-</li>
-</ol>
-<h3 id="5-4-3-查找演示"><a href="#5-4-3-查找演示" class="headerlink" title="5.4.3 查找演示:"></a>5.4.3 查找演示:</h3><p>示例数据:</p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">Insert</span> <span class="token keyword">into</span> page_demo <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token string">'aaaa'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token string">'bbbb'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">300</span><span class="token punctuation">,</span><span class="token string">'cccc'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">400</span><span class="token punctuation">,</span><span class="token string">'dddd'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">500</span><span class="token punctuation">,</span><span class="token string">'eeee'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token number">600</span><span class="token punctuation">,</span><span class="token string">'ffff'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">,</span><span class="token number">700</span><span class="token punctuation">,</span><span class="token string">'gggg'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">,</span><span class="token number">800</span><span class="token punctuation">,</span><span class="token string">'hhhh'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token number">900</span><span class="token punctuation">,</span><span class="token string">'iiii'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token number">1000</span><span class="token punctuation">,</span><span class="token string">'jjjj'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">11</span><span class="token punctuation">,</span><span class="token number">1100</span><span class="token punctuation">,</span><span class="token string">'kkkk'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token number">1200</span><span class="token punctuation">,</span><span class="token string">'llll'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">13</span><span class="token punctuation">,</span><span class="token number">1300</span><span class="token punctuation">,</span><span class="token string">'mmmm'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">14</span><span class="token punctuation">,</span><span class="token number">1400</span><span class="token punctuation">,</span><span class="token string">'nnnn'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">,</span><span class="token number">1500</span><span class="token punctuation">,</span><span class="token string">'oooo'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">,</span><span class="token number">1600</span><span class="token punctuation">,</span><span class="token string">'pppp'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="3-2-2-查看字符集"><a href="#3-2-2-查看字符集" class="headerlink" title="3.2.2 查看字符集:"></a>3.2.2 查看字符集:</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">show</span> <span class="token punctuation">(</span><span class="token keyword">character</span> <span class="token keyword">set</span> <span class="token operator">|</span> <span class="token keyword">charset</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token operator">like</span> <span class="token string">'字符集名称匹配模式'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<p>假设目前分组如图:</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210811230743354.png" alt="记录分组示意图"></p>
-<p>现在想要查找主键值为6的元素,因为<code>Page Directory</code>实际上就是个指针数组,并且指向的值还是按照大小逆序的,所以可以使用2分发查找:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808175539113.png" alt="image-20210808175539113"></p>
+<p>说明:</p>
 <ol>
-<li>计算中间槽位: (0+４)／2 = 2,槽2指向记录的主键值为8,比6大,所以要查找的6在槽2的前面.调整high=2,low不变</li>
-<li>重新计算中间槽位: (0+2)/2 =1,槽1指向记录的主键值为4,比6小,所以要查找的6在槽1的后面.</li>
-<li>此时high-low=1,表示中间没有槽位了,所以主键为6的记录应该是在槽2对应的小组里面.由于记录在数据页中是按照主键从小到大依次根据<code>next_record</code>形成的一条单向链表,虽然知道槽2对应分组最大的记录但是也无法从其找到需要的记录,所以应该从槽1指向的记录通过<code>next_record</code>开始遍历找到需要的记录.</li>
+<li><code>Default collation</code>: 表示该字符集默认的比较规则</li>
+<li><code>Maxlen</code>: 表示该字符集最多使用多少个字节来描述字符.</li>
 </ol>
-<h2 id="5-5-Page-Header"><a href="#5-5-Page-Header" class="headerlink" title="5.5 Page Header:"></a>5.5 Page Header:</h2><p><code>Page Header</code>主要是用来存储数据页中记录的状态信息的,比如: 数据页已经存了多少条记录,<code>Free Space</code>在页中的偏移量,页目录中存储了多少个槽位等.固定<code>56字节</code>.</p>
-<p><strong>Page Header 各部分及作用:</strong></p>
-<table>
-<thead>
-<tr>
-<th>状态名称</th>
-<th>占用空间(字节)</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>PAGE_N_DIR_SLOTS</td>
-<td>2</td>
-<td>页目录中槽的数量</td>
-</tr>
-<tr>
-<td>PAGE_HEAP_TOP</td>
-<td>2</td>
-<td>当前Free Space开始的地址</td>
-</tr>
-<tr>
-<td>PAGE_N_HEAP</td>
-<td>2</td>
-<td>第一位表示本页记录是否为紧凑型记录,其余位本页堆中记录的数量(包含Infimum,Supremum,被标记为<code>已删除</code>的记录)</td>
-</tr>
-<tr>
-<td>PAGE_FREE</td>
-<td>2</td>
-<td>表示的是 <code>已删除记录</code>形成的单向链表中头结点记录在页面的偏移量.</td>
-</tr>
-<tr>
-<td>PAGE_GARBAGE</td>
-<td>2</td>
-<td><code>已删除记录</code>占用的字节数</td>
-</tr>
-<tr>
-<td>PAGE_LAST_INSERT</td>
-<td>2</td>
-<td>最后插入的记录的位置</td>
-</tr>
-<tr>
-<td>PAGE_DIRECTION</td>
-<td>2</td>
-<td>记录插入的方向</td>
-</tr>
-<tr>
-<td>PAGE_N_DIRECTION</td>
-<td>2</td>
-<td>一个方向连续插入记录的数量</td>
-</tr>
-<tr>
-<td>PAGE_N_RECS</td>
-<td>2</td>
-<td>本页用户记录数量(不含: <code>Infimum</code>,<code>Supremum</code> 以及 <code>已删除记录</code>)</td>
-</tr>
-<tr>
-<td>PAGE_MAX_TRX_ID</td>
-<td>8</td>
-<td>本页最大的事务id,这个值仅在二级索引页面中定义</td>
-</tr>
-<tr>
-<td>PAGE_LEVEL</td>
-<td>2</td>
-<td>本页在B+树中所处的层级</td>
-</tr>
-<tr>
-<td>PAGE_INDEX_ID</td>
-<td>8</td>
-<td>索引ID,表示当前页属于哪个索引</td>
-</tr>
-<tr>
-<td>PAGE_BTR_SEG_LEAF</td>
-<td>10</td>
-<td>B+树叶子结点段的头部信息,仅在B+树的根页面中定义</td>
-</tr>
-<tr>
-<td>PAGE_BTR_SEG_TOP</td>
-<td>10</td>
-<td>B+树非叶子结点段的头部信息,仅在B+树的根页面中定义</td>
-</tr>
-</tbody></table>
 <blockquote>
-<ol>
-<li><code>PAGE_DIRECTION</code>: 待插入记录的主键值比上一条记录的主键值大,则 待插入记录的插入方向就是右边,否则为左边.<code>PAGE_DIRECTION</code>就是记录这个方向</li>
-<li><code>PAGE_N_DIRECTION</code> : 如果连续插入几条记录<code>PAGE_DIRECTION</code>都是一样的,<code>Mysql</code>就会记录沿着同一个方向插入的记录条数.如果如果方向改变<code>PAGE_N_DIRECTION</code>就会被清零重新统计</li>
-</ol>
+<p>注意: mysql中字符集名称都是小写的</p>
 </blockquote>
-<h2 id="5-6-File-Header"><a href="#5-6-File-Header" class="headerlink" title="5.6 File Header:"></a>5.6 File Header:</h2><p><code>File Header</code>通用于个类型的页,它描述一些通用于各种页的信息,比如本页编号,上一页,下一页等,固定占用<code>38字节</code></p>
-<p><strong>File Header</strong>各部分及其作用:</p>
+<h3 id="3-2-3-查看比较规则"><a href="#3-2-3-查看比较规则" class="headerlink" title="3.2.3 查看比较规则:"></a>3.2.3 查看比较规则:</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">show</span> collation <span class="token punctuation">[</span><span class="token operator">like</span> <span class="token string">'字符集匹配模式'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808180418418.png" alt="image-20210808180418418"></p>
+<p><strong>比较规则的命名:</strong></p>
+<ul>
+<li><p>比较规则都是由与其关联的字符集的名称开头,如图中都是<code>utf8</code>的比较规则</p>
+</li>
+<li><p><code>_</code>之后紧跟的是该规则适用的语种名称.如: <code>utf8_slovak_ci</code>表示斯洛伐克语言的比较规则</p>
+</li>
+<li><p><code>_</code>之后紧跟的是该规则是否区分对应语言中某些性质,如<code>大小写</code>,<code>重音</code>等</p>
 <table>
 <thead>
 <tr>
-<th>状态名称</th>
-<th>占用空间大小(字节)</th>
+<th>后缀</th>
 <th>描述</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>FIL_PAGE_SPACE_OR_CHKSUM</td>
-<td>4</td>
-<td>本页校验和</td>
+<td>_ai</td>
+<td>不区分重音(accent insensitive)</td>
 </tr>
 <tr>
-<td>FIL_PAGH_OFFSET</td>
-<td>4</td>
-<td>页号</td>
+<td>_as</td>
+<td>区分重音(accent sensitive)</td>
 </tr>
 <tr>
-<td>FIL_PAGE_PREV</td>
-<td>4</td>
-<td>上一页的页号</td>
+<td>_ci</td>
+<td>不区分大小写(case insensitive)</td>
 </tr>
 <tr>
-<td>FIL_PAGE_NEXT</td>
-<td>4</td>
-<td>下一页的页号</td>
+<td>_cs</td>
+<td>区分大小写(case sensitive)</td>
 </tr>
 <tr>
-<td>FIL_PAGE_LSN</td>
-<td>8</td>
-<td>本页被最后修改时对应的LSN(Log Sequence Number,日志序列号)</td>
-</tr>
-<tr>
-<td>FIL_PAGE_TYPE</td>
-<td>2</td>
-<td>本页类型</td>
-</tr>
-<tr>
-<td>FIL_PAGE_FILE_FLSH_LSN</td>
-<td>8</td>
-<td>仅在系统表空间的第一个页中定义,表示文件至少被刷新到了对应的LSN</td>
-</tr>
-<tr>
-<td>FIL_PAGE_ARCH_LOG_NO_OR_SPACE_ID</td>
-<td>4</td>
-<td>页属于哪个表空间</td>
+<td>_bin</td>
+<td>二进制形式比较(binary)</td>
 </tr>
 </tbody></table>
-<ul>
-<li><p><code>FIL_PAGH_OFFSET</code>: 页的唯一标识,<code>MySQL</code>通过页号唯一确定一个页</p>
-</li>
-<li><p><code>FIL_PAGE_NEXT</code>和<code>FIL_PAGE_PREV</code>: 由于一张表可能存储成千上万条数据,所以肯定无法分配连续的空间来存储,那么就需要将一张表的数据页关联起来.<code>MySQL</code>就是通过<code>FIL_PAGE_NEXT</code>和<code>FIL_PAGE_PREV</code>分别指向下一页和上一页,以页为结点形成一个双向链表.</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/image-20210812001008664.png" alt="数据页之间形成的双向链表"></p>
 </li>
 </ul>
-<p><strong>页的类型:</strong></p>
+<blockquote>
+<p>每个字符集都有很多的比较规则,<code>show collation</code>语句查询出来的信息中,<code>default</code>为yes的那一种比较规则就是默认比较规则</p>
+</blockquote>
+<h2 id="3-3-mysql中的应用"><a href="#3-3-mysql中的应用" class="headerlink" title="3.3 mysql中的应用:"></a>3.3 mysql中的应用:</h2><h3 id="3-3-1-不同级别的字符集和比较规则"><a href="#3-3-1-不同级别的字符集和比较规则" class="headerlink" title="3.3.1 不同级别的字符集和比较规则:"></a>3.3.1 不同级别的字符集和比较规则:</h3><p>mysql字符集和比较规则分成了四个级别:</p>
+<ul>
+<li>服务器级别</li>
+<li>数据库级别</li>
+<li>表级别</li>
+<li>列级别</li>
+</ul>
+<h4 id="1-服务器级别"><a href="#1-服务器级别" class="headerlink" title="1. 服务器级别:"></a>1. 服务器级别:</h4><p>服务器级别的字符集和比较规则,通过两个系统变量来设置.</p>
+<ul>
+<li><code>character_set_server</code>: 服务器级别字符集</li>
+<li><code>collation_server</code>: 服务器级别比较规则</li>
+</ul>
+<p><strong>两个变量的查询:</strong></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 查询字符集</span>
+<span class="token keyword">SHOW</span> VARIABLES <span class="token operator">LIKE</span> <span class="token string">'character_set_server'</span><span class="token punctuation">;</span>
+<span class="token comment">-- 查比较规则</span>
+<span class="token keyword">SHOW</span> VARIABLES <span class="token operator">LIKE</span> <span class="token string">'collation_server'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808182132027.png" alt="image-20210808182132027"></p>
+<p><strong>两个变量的设置:</strong></p>
+<p>可以通过 <code>SET</code>语句和<code>配置文件</code>的方式设置这两个系统变量</p>
+<h4 id="2-数据库级别"><a href="#2-数据库级别" class="headerlink" title="2. 数据库级别:"></a>2. 数据库级别:</h4><p>数据库级别的字符集和比较规则,通过两个系统变量来设置:</p>
+<ul>
+<li><code>character_set_database</code>: 字符集</li>
+<li><code>collation_database</code>: 比较规则</li>
+</ul>
+<p><strong>变量查询:</strong> 跟服务器级别没区别,只是换下变量名</p>
+<p><strong>变量修改:</strong></p>
+<p>在创建数据库的时候就可以指定字符集和比较规则:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 创建的时候设置</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> 数据库名
+	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名<span class="token punctuation">]</span>
+	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> COLLATION 比较规则名字<span class="token punctuation">]</span><span class="token punctuation">;</span>
+	
+<span class="token comment">-- 修改</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> 数据库名
+	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名<span class="token punctuation">]</span>
+	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> COLLATION 比较规则名字<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>注意事项:</strong></p>
+<ol>
+<li>如果没有设置数据库级别的字符集和比较规则,那么就会使用服务器级别的字符集和比较规则</li>
+<li><code>character_set_database</code>和<code>collation_database</code>这两个变量只是用来给用户展示当前数据库使用的字符集和比较规则,并不能通过<code>SET</code>这两个变量来改变当前数据库的字符集和比较规则.</li>
+</ol>
+<h4 id="3-表级别"><a href="#3-表级别" class="headerlink" title="3. 表级别:"></a>3. 表级别:</h4><p>表级别没有字符集和比较规则的系统变量</p>
+<p><strong>设置表级别的字符集和比较规则:</strong></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 建表设置</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> 表名 <span class="token punctuation">(</span>列信息<span class="token punctuation">)</span>
+	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名称<span class="token punctuation">]</span>
+	<span class="token punctuation">[</span>COLLATION 比较规则名字<span class="token punctuation">]</span><span class="token punctuation">;</span>
+	
+<span class="token comment">-- 修改</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> 表名 <span class="token punctuation">(</span>列信息<span class="token punctuation">)</span>
+	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名称<span class="token punctuation">]</span>
+	<span class="token punctuation">[</span>COLLATION 比较规则名字<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>注意事项:</strong></p>
+<ol>
+<li>如果建表的时候没有设置字符集和比较规则,那么就会使用表所在数据库的字符集和比较规则.</li>
+</ol>
+<h4 id="4-列级别"><a href="#4-列级别" class="headerlink" title="4. 列级别:"></a>4. 列级别:</h4><p>列级别没有字符集和比较规则的系统变量</p>
+<p><strong>设置列级别的字符集和比较规则:</strong></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 建表设置</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> 表名 <span class="token punctuation">(</span>
+    列名 字符串类型 <span class="token punctuation">[</span><span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名称<span class="token punctuation">]</span> <span class="token punctuation">[</span>COLLATION 比较规则名<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    其他列信息
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+<span class="token comment">-- 修改</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> 表名 <span class="token keyword">MODIFY</span> 列名 字符串类型 <span class="token punctuation">[</span><span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名称<span class="token punctuation">]</span> <span class="token punctuation">[</span>COLLATION 比较规则名称<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>注意事项:</strong></p>
+<ol>
+<li>如果建表的时候没有设置列的字符集和比较规则,那么就会使用列所在表的字符集和比较规则.</li>
+<li>修改列的字符集时,如果列中的数据不能使用修改后的字符集表示,则会发生错误.</li>
+</ol>
+<h4 id="5-仅修改字符集或比较规则"><a href="#5-仅修改字符集或比较规则" class="headerlink" title="5. 仅修改字符集或比较规则:"></a>5. 仅修改字符集或比较规则:</h4><p>字符集和比较规则之间是相互关联的,如果仅仅修改其中某一项,另外一项也会变成对应的值</p>
+<ul>
+<li>仅修改字符集,则 比较规则将变为修改后的字符集默认的比较规则</li>
+<li>仅修改比较规则, 则 字符集将变为修改后的比较规则对应的字符集</li>
+</ul>
+<h3 id="3-3-2-c-s通信过程中使用的字符集"><a href="#3-3-2-c-s通信过程中使用的字符集" class="headerlink" title="3.3.2 c/s通信过程中使用的字符集:"></a>3.3.2 c/s通信过程中使用的字符集:</h3><ol>
+<li><p>客户端向服务器发送数据的时候,会使用一种字符集对数据进行编码,服务器接收到数据之后会对数据进行解码</p>
+</li>
+<li><p>字符集转换: 就是服务器接收到数据之后使用与客户端相同的字符集解码,然后再用其他字符集对数据进行编码</p>
+</li>
+<li><p>一次查询请求字符集的变化:</p>
+<ol>
+<li><p>客户端发送请求: </p>
+<p>客户端在发送查询请求的时候,默认使用的字符集与系统使用的字符集相同,使用该字符集给数据进行编码.</p>
+<blockquote>
+<p>特别的: win系统下,可以使用<code>--defualt-character-set</code>启动项设置客户端使用的字符集,<code>unix系统</code>不行</p>
+</blockquote>
+</li>
+<li><p>服务器接收请求:</p>
+<p>服务器接收到客户端编码之后的二进制字节序列后,会为当前客户端维护一个<code>SESSION范围的变量 --- character_set_client</code>,该变量表示的是客户端在编码数据的时候使用的字符集.</p>
+<p>如果<code>character_set_client</code>表示的字符集不能解码客户端的请求,则 报错</p>
+</li>
+<li><p>服务器处理请求:</p>
+<p>在真正处理之前,会将请求数据使用 <code>character_set_client</code>表示的字符集进行解码,解码之后使用<code>SESSION 范围变量 cahracter_set_connect</code>对数据进行编码,称为一个新的字节序列</p>
+<p><code>character_set_client</code> 变量的作用是: 描述服务器接收到请求数据并解码之后,要想正确表示客户端表达的语义应该使用什么字符集进行编码.</p>
+</li>
+<li><p>服务器响应之前对响应数据进行编码:</p>
+<p>将查询结果通过数据本身在Mysql中使用的字符集进行解码,然后根据<code>SESISION范围变量 character_set_result</code>表示的字符集进行编码,编码之后发送给客户端</p>
+</li>
+<li><p>客户端接收到相应之后:</p>
+<p>使用默认的字符集对数据进行解码,然后展示给用户</p>
+</li>
+</ol>
+</li>
+<li><p>交换过程流程图:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808195044276.png" alt="image-20210808195044276"></p>
+</li>
+<li><p>几个变量的总结:</p>
 <table>
 <thead>
 <tr>
-<th>类型</th>
-<th>16进制</th>
-<th>含义</th>
+<th>系统变量(SESSION范围)</th>
+<th>作用</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>FIL_PAGE_TYPE_ALLOCATED</td>
-<td>0x0000</td>
-<td>刚分配还未使用</td>
+<td>character_set_client</td>
+<td>表示请求数据编码使用的字符集</td>
 </tr>
 <tr>
-<td>FIL_PAGE_UNDO_LOG</td>
-<td>0x0002</td>
-<td>undo日志页</td>
+<td>character_set_connection</td>
+<td>表示请求序列需要被转换的字符集</td>
 </tr>
 <tr>
-<td>FIL_PAGE_INODE</td>
-<td>0x0003</td>
-<td>存储段的信息</td>
-</tr>
-<tr>
-<td>FIL_PAGE_IBUF_FREE_LIST</td>
-<td>0x0004</td>
-<td>Change buffer空闲列表</td>
-</tr>
-<tr>
-<td>FIL_PAGE_IBUF_BITMAP</td>
-<td>0x0005</td>
-<td>Change Buffer的一些属性</td>
-</tr>
-<tr>
-<td>FIL_PAGE_TYPE_SYS</td>
-<td>0x0006</td>
-<td>存储一些系统数据</td>
-</tr>
-<tr>
-<td>FIL_PAGE_TYPE_TRX_SYS</td>
-<td>0x0007</td>
-<td>事务的系统数据</td>
-</tr>
-<tr>
-<td>FIL_PAGE_TYPE_FSP_HDR</td>
-<td>0x0008</td>
-<td>表空间的头部信息</td>
-</tr>
-<tr>
-<td>FIL_PAGE_TYPE_XDES</td>
-<td>0x0009</td>
-<td>存储区的一些属性</td>
-</tr>
-<tr>
-<td>FIL_PAGE_TYPE_BLOB</td>
-<td>0x000A</td>
-<td>溢出页</td>
-</tr>
-<tr>
-<td>FIL_PAGE_INDEX</td>
-<td>0x45BF</td>
-<td>索引页(即数据页)</td>
+<td>character_set_result</td>
+<td>表示客户端希望的响应数据编码时使用的字符集</td>
 </tr>
 </tbody></table>
-<h2 id="5-7-File-Trailer"><a href="#5-7-File-Trailer" class="headerlink" title="5.7 File Trailer:"></a>5.7 File Trailer:</h2><p><code>File Trailer</code>: 由于数据操作实际上都是在内存中,操作完成之后需要将结果刷新到磁盘里面去,为了防止数据没有被完全刷新的情况,<code>Mysql</code>通过<code>File Trailer</code>来校验一个数据页是否是完整的.<code>File Trailer</code>通用于所有类型的页,由<code>8字节</code>组成:</p>
-<ul>
-<li><code>前四字节</code>表示页的校验和: 这部分与<code>File Header</code>中的校验和是相对应的. 每当一个页在内存中操作完成,写回磁盘的时候都是先写<code>File Header</code>,在最后校验和也会被写入到<code>File Trailer</code>.如果写回磁盘的过程中,出现了只写了<code>File Header</code>中的校验和,没来得及写<code>FIle Trailer</code>中的校验和,那么就会出现在校验的时候<code>File Header</code>中的校验和是新的,而<code>File Trailer</code>中的校验和是旧的,导致出现问题</li>
-<li><code>后四字节</code>表示页面被修改时对应的LSN的后四字节,正常情况下,<code>File Header</code>的<code>FILE_PAGE_LSN</code>字段的后四字节相同.</li>
-</ul>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808193922376.png" alt="image-20210808193922376"></p>
+</li>
+</ol>
+<h3 id="3-3-3-比较规则的应用"><a href="#3-3-3-比较规则的应用" class="headerlink" title="3.3.3 比较规则的应用:"></a>3.3.3 比较规则的应用:</h3><p>比较规则主要是应用于 数据字段排序.如果发现数据排序结果与期望不同,就可以考虑是不是比较规则的问题.</p>
 
                 
             </div>
@@ -960,13 +762,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/4_InnoDB%E8%AE%B0%E5%BD%95%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">
+                <a href="/hello-world/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="4 InnoDB记录存储结构">
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
                         
-                        <span class="card-title">4 InnoDB记录存储结构</span>
+                        <span class="card-title">Hello World</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -981,23 +783,11 @@
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/" class="post-category">
-                                    MySQL是怎样运行的
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            pounds
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/MySQL/">
-                        <span class="chip bg-color">MySQL</span>
-                    </a>
-                    
                 </div>
                 
             </div>
@@ -1009,13 +799,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/">
+                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/4_InnoDB%E8%AE%B0%E5%BD%95%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="B+树索引">
+                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="4 InnoDB记录存储结构">
                         
-                        <span class="card-title">B+树索引</span>
+                        <span class="card-title">4 InnoDB记录存储结构</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
