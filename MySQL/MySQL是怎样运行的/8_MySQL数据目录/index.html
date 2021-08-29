@@ -321,7 +321,7 @@
                     
                         <div class="info-break-policy">
                             | <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                            271
+                            1.8k
                         </div>
                     
 
@@ -482,7 +482,72 @@
 <h3 id="8-2-1-数据目录和安装目录的区别"><a href="#8-2-1-数据目录和安装目录的区别" class="headerlink" title="8.2.1 数据目录和安装目录的区别:"></a>8.2.1 数据目录和安装目录的区别:</h3><p><code>安装目录</code>: 安装目录是mysql程序运行文件存放的地方</p>
 <p><code>数据目录</code>: 数据目录是mysql程序在运行过程中产生的一些 <code>用户数据</code>,<code>程序运行状态数据</code>等数据存储的地方</p>
 <h3 id="8-2-2-数据目录在哪儿"><a href="#8-2-2-数据目录在哪儿" class="headerlink" title="8.2.2 数据目录在哪儿:"></a>8.2.2 数据目录在哪儿:</h3><p><code>show variables like 'datadir'</code></p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/8_MySQL%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/image-20210829003423480.png" alt="查看Mysql数据目录"></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/8_MySQL%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/image-20210829192120858.png" alt="image-20210829192120858"></p>
+<h2 id="8-3-数据目录结构"><a href="#8-3-数据目录结构" class="headerlink" title="8.3 数据目录结构:"></a>8.3 数据目录结构:</h2><h3 id="8-3-1-数据库在文件系统中的表示"><a href="#8-3-1-数据库在文件系统中的表示" class="headerlink" title="8.3.1 数据库在文件系统中的表示:"></a>8.3.1 数据库在文件系统中的表示:</h3><p>每个数据库在文件系统中都对应数据目录下的一个子目录(即一个文件夹), 在创建数据库的时候, MySQL主要会发生以下流程:</p>
+<ol>
+<li>数据目录下创建一个与数据库名相同的子目录</li>
+<li>在该子目录下,创建一个名字为 <code>db.opt</code>的文件. 这个文件中包含了数据库的一些属性,比如: 数据库的字符集和比较规则</li>
+</ol>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/8_MySQL%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/image-20210829193333202.png" alt="数据目录里面有些啥"></p>
+<h3 id="8-3-2-表在文件系统中的表示"><a href="#8-3-2-表在文件系统中的表示" class="headerlink" title="8.3.2 表在文件系统中的表示:"></a>8.3.2 表在文件系统中的表示:</h3><p>在文件系统中,表的信息主要被分成下面两类的数据存储起来:</p>
+<ul>
+<li><code>表结构信息描述</code>: 主要描述表结构信息,比如表名,表有多少列,表每列的数据类型等各种信息<ul>
+<li>InnoDB 和 MyISAM 这两种存储引擎都在数据目录中,对应数据库目录内为每一张表创建了一个 后缀为<code>.frm</code>的文件来描述表结构.</li>
+</ul>
+</li>
+<li><code>表中的数据</code>: </li>
+</ul>
+<h4 id="1-InnoDB是如何存储表数据的"><a href="#1-InnoDB是如何存储表数据的" class="headerlink" title="1. InnoDB是如何存储表数据的:"></a>1. InnoDB是如何存储表数据的:</h4><p>InnoDB中无论是用户记录,还是索引记录都是存在数据页里面的,为了更好的管理这些数据页,InnoDB提出了<code>表空间</code>这一概念,<code>表空间</code>对应文件系统上一个或者多个真实文件.每一个表空间可以被划分为多个页,表数据就存放在<code>表空间</code>下的某些页中.</p>
+<p>表空间分类:</p>
+<ul>
+<li><p><code>系统表空间</code>: 在默认情况下, InnoDB会在数据目录下创建一个名为<code>ibdata1</code>,初始大小为12MB的文件,这个文件就是在文件系统上<code>系统表空间</code>的表示.</p>
+<p>这个文件是一个自扩展文件, 在文件容量不够的时候,就会自己增加文件的大小.</p>
+<p>如果想让系统表空间对应多个文件,或者自己指定系统表空间使用哪个文件,可以通过配置文件中进行如下配置:</p>
+<pre class="line-numbers language-properties" data-language="properties"><code class="language-properties"><span class="token comment"># 指定系统表空间文件为: data1和data2,并且data2是自扩展文件</span>
+[server]
+<span class="token attr-name">innodb_data_file_path</span><span class="token punctuation">=</span><span class="token attr-value">data1:512M;data2:512M:autoextend</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>MySQL服务器中,系统表空间只有一份5.5.7版本到5.6.5版本之间的Mysql,Innodb表数据默认存放在系统表空间中</p>
+</blockquote>
+</li>
+<li><p><code>独立表空间</code>: 在5.6.6版本之后,InnoDB不再默认把各个表的数据存储到系统表空间中,而是为每一张表都创建一个<code>独立表空间</code>.在使用<code>独立表空间</code>存放数据的时候,在MySQL数据目录中对应数据库文件夹中,会生成一个<code>表名.ibd</code>格式的文件,用来表示一张表的<code>独立表空间</code>.</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/8_MySQL%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/image-20210829222453784.png" alt="以ruo_yi数据库为例"></p>
+<p>下面的配置<code>此后新建的表</code>指定使用系统表空间还是独立表空间来存放数据:</p>
+<pre class="line-numbers language-properties" data-language="properties"><code class="language-properties"><span class="token comment"># 这个配置只对新建的表有用,不会影响已经存在的表</span>
+<span class="token comment"># 0表示使用系统表空间,1表示使用独立表空间</span>
+[server]
+<span class="token attr-name">innodb_file_per_table</span><span class="token punctuation">=</span><span class="token attr-value">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果想要移动已经存在表的数据,到系统表空间或者独立表空间,可以使用sql</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 系统表空间 转移到 独立表空间</span>
+<span class="token keyword">alter</span> <span class="token keyword">table</span> 表名 <span class="token keyword">tablespace</span> <span class="token punctuation">[</span><span class="token operator">=</span><span class="token punctuation">]</span> innodb_file_per_table
+<span class="token comment">-- 独立表空间 转移到 系统表空间</span>
+<span class="token keyword">alter</span> <span class="token keyword">table</span> 表名 <span class="token keyword">tablespace</span> innodb_system<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li><p><code>其他表空间</code>: 除了上面说的这两种表空间以外,还有一些其他的表空间,比如: <code>undo表空间</code>, <code>临时表空间</code>等</p>
+</li>
+</ul>
+<h4 id="2-MyISAM是如何存储表数据的"><a href="#2-MyISAM是如何存储表数据的" class="headerlink" title="2. MyISAM是如何存储表数据的:"></a>2. MyISAM是如何存储表数据的:</h4><p>MyISAM中 索引与数据是分开存放的,表现在文件系统中就是使用不同文件来分别存储数据和索引.<code>但是MyISAM没有表空间这个概念</code>,索引文件和数据文件都存放在数据库文件夹中.</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/8_MySQL%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/image-20210829224340415.png" alt="MyISAM表文件内容"></p>
+<p>其中: <code>.MYD</code>后缀表示表的数据文件,<code>.MYI</code>后缀表示表的索引文件</p>
+<h3 id="8-3-3-其他文件"><a href="#8-3-3-其他文件" class="headerlink" title="8.3.3 其他文件:"></a>8.3.3 其他文件:</h3><p>数据目录还包含了一些确保程序更好运行的额外文件:</p>
+<ul>
+<li>服务器进程文件: 每一个MySQL服务器程序都意味着启动一个进程, MySQL服务器会把自己的进程ID写入到这个文件中.</li>
+<li>服务器日志文件: 服务器运行期间,会产生各种各样的日志, 比如常规的查询日志, 错误日志, 二进制日志,redo日志等.</li>
+<li>SSL和RSA证书与密钥文件: 主要是为了客户端和服务器安全通信而创建的一些文件.</li>
+</ul>
+<h2 id="8-4-文件系统对数据库的影响"><a href="#8-4-文件系统对数据库的影响" class="headerlink" title="8.4 文件系统对数据库的影响:"></a>8.4 文件系统对数据库的影响:</h2><p>因为数据都是存放在文件系统中,所以会收到文件系统的一些制约:</p>
+<ul>
+<li>数据库名称和表名称不能超过文件系统所允许的最大长度:</li>
+<li>特殊字符的问题: 为了避免发生文件系统不支持特殊字符的情况,mysql会将数据库名字和表名字中除了数字和拉丁字母以外的字符在文件系统中都映射成<code>@+编码值</code>的形式</li>
+<li>文件长度受到文件系统对文件最大长度的限制.</li>
+</ul>
+<h2 id="8-5-MySQL系统数据库简介"><a href="#8-5-MySQL系统数据库简介" class="headerlink" title="8.5 MySQL系统数据库简介:"></a>8.5 MySQL系统数据库简介:</h2><ul>
+<li><code>mysql</code>: 存放<code>mysql</code>的用户账户和权限信息, 一些存储过程和事件的定义信息,一些运行过程中产生的日志信息,一些帮助信息以及时区信息</li>
+<li><code>information_schema</code>: 保存MySQL服务器维护的所有其他数据库的信息,比如有哪些表,那些试图,哪些触发器,哪些列,哪些索引等. <code>就是其他数据的描述信息,有时候也称之为元数据</code></li>
+<li><code>performance_shcema</code>: 保存MySQL服务器运行过程中的一些状态信息</li>
+<li><code>sys</code>: 以视图的形式把<code>information_shcema</code>和<code>performance_shcema</code>结合起来,让开发人员更方便了解Mysql的性能信息</li>
+</ul>
 
                 
             </div>
