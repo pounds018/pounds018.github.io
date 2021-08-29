@@ -372,7 +372,7 @@ categories:
 
 #### 5.3.3.4 查找字节所在的位置:
 
-![1](5_Netty核心组件/5_netty核心组件/查找操作.png)  
+![1](5_netty核心组件/查找操作.png)  
 一般的字节可以通过 `indexOf()` 方法来查找指定的字节,或者通过传入 `ByteProcessor参数` 设定`中止字符`来配合`forEachByte()方法`帮助查找.
 
 ```java
@@ -466,29 +466,29 @@ categories:
 
 #### 5.3.4.1 顺序读操作:  
 
-   ![1](5_Netty核心组件/顺序读操作1.png)  
-   ![1](5_Netty核心组件/顺序读操作2.png)  
-   ![1](5_Netty核心组件/顺序读操作3.png)  
-   ![1](5_Netty核心组件/顺序读操作4.png)   
+   ![](5_Netty核心组件/顺序读操作1.png)  
+   ![](5_Netty核心组件/顺序读操作2.png)  
+   ![](5_Netty核心组件/顺序读操作3.png)  
+   ![](5_Netty核心组件/顺序读操作4.png)   
 
 #### 5.3.4.2 顺序写操作:  
 
-   ![1](5_Netty核心组件/顺序写操作1.png)  
-   ![1](5_Netty核心组件/顺序写操作2.png)  
-   ![1](5_Netty核心组件/顺序写操作3.png)  
-   ![1](5_Netty核心组件/顺序写操作4.png)  
+   ![](5_Netty核心组件/顺序写操作1.png)  
+   ![](5_Netty核心组件/顺序写操作2.png)  
+   ![](5_Netty核心组件/顺序写操作3.png)  
+   ![](5_Netty核心组件/顺序写操作4.png)  
 
 #### 5.3.4.3 随机写操作:  
 
-   ![1](5_Netty核心组件/随机写操作.png)  
+   ![](5_Netty核心组件/随机写操作.png)  
 
 #### 5.3.4.4 随机读操作:  
 
-   ![1](5_Netty核心组件/随机读操作.png)
+   ![](5_Netty核心组件/随机读操作.png)
 
 #### 5.3.4.5 其他操作:  
 
-   ![1](5_Netty核心组件/其他操作.png)
+   ![](5_Netty核心组件/其他操作.png)
 
 ### 5.3.5 ByteBuf辅助工具类:
 
@@ -497,13 +497,13 @@ categories:
 `ByteBufHolder`是`ByteBuf`的容器,除了实际数据装载之外,我们还需要存储各种属性值.比如HTTP的请求和响应都可以携带消息体,在Netty中消息体就是用`ByteBuf`来表示;
 但是由于不同的协议之间会包含不同的协议字段和功能,这部分数据并不适合写在实际数据中,所以Netty抽象出了一个 `ByteBufHolder接口`持有一个`ByteBuf`用以装载实际数据,
 同时携带不同协议的协议字段和功能. (ByteBufHolder的实现类实现不同协议的协议字段和功能描述).  
-![1](5_Netty核心组件/不同协议的ByteBufHolder实现类.png)  
+![](5_Netty核心组件/不同协议的ByteBufHolder实现类.png)  
 说明:  
 
 - `ByteBufHolder`为Netty的高级特性提供了支持,比如缓冲区池化,其中可以从池中借用ByteBuf,并且在需要时自动释放.  
 - `通常用作需要存储实际数据的消息对象接口`
 - `常用方法`:  
-  ![1](5_Netty核心组件/ByteBufHolder的常用方法.png)  
+  ![](5_Netty核心组件/ByteBufHolder的常用方法.png)  
 
 #### 5.3.5.2 ByteBuf内存空间分配:  
 
@@ -513,7 +513,7 @@ categories:
       `池化`不会改变`ByteBuf`api 的语义,只是新的数据需要使用ByteBuf来存储的时候,可以从缓冲池中取出一个 `ByteBuf实例` 来存储数据.
 
    2. 常用方法:  
-      ![1](5_Netty核心组件/ByteBufAllocator常用方法.png)  
+      ![](5_Netty核心组件/ByteBufAllocator常用方法.png)  
 
    3. 说明:  
 
@@ -532,7 +532,7 @@ categories:
 
 2. `Unpooled缓冲区`:  
    在某些情况下,如果未能获取到一个 `ByteBufAllocator`的引用.可以通过工具类 `Unpooled` 来创建未池化的 `ByteBuf实例`.  
-   ![1](5_Netty核心组件/Unpooled工具类.png)  
+   ![](5_Netty核心组件/Unpooled工具类.png)  
 
 3. `ByteBufUtil类`:  
    `ByteBufUtil` 提供了用于操作 `ByteBuf` 的静态的辅助方法。因为这个API是通用的，并且和池化无关，所以这些方法已然在分配类的外部实现。
@@ -572,7 +572,7 @@ TODO
 
 `Channel,ChannelPipeline,ChannelContext,ChannelHandler之间的关系`:  
 
-![关系图](5_Netty核心组件/channelhandler关系.png)
+![](5_Netty核心组件/channelhandler关系.png)
 
 Netty的ChannelPipeline和ChannelHandler机制类似于Servlet和Filter过滤器,这类拦截器实际上是责任链模式的一种变形,主要是为了方便事件的拦截和用户业务逻辑的定制.  
 `ChannelHandler`: 从应用程序开发人员的角度来看,Netty的主要组件是ChannelHandler,它充当了所有处理入站和出站数据的应用程序逻辑的容器,ChannelHandler可以适用于任何逻辑操作.  
