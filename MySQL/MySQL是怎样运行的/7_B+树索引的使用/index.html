@@ -32,7 +32,35 @@
 <meta name="generator" content="Hexo 5.4.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 </head>
-
+<style type="text/css">
+        .uk-alert {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #ebf7fd;
+            color: #2d7091;
+            border: 1px solid rgba(45, 112, 145, 0.3);
+            border-radius: 4px;
+            text-shadow: 0 1px 0 #ffffff;
+        }
+        .uk-alert-success {
+            background: #e8ece2;
+            color: #659f13;
+            border-left: 6px solid rgba(120, 199, 9);
+            font-weight: 600;
+        }
+        .uk-alert-warning {
+            background: #fff1f0;
+            color: rgb(73, 59, 156);
+            border-left: 6px solid rgb(83, 27, 184, 0.3);
+            font-weight: 600;
+        }
+        .uk-alert-danger {
+            background: #f8f8f6;
+            color: #eb360d;
+            border-left: 6px solid#eb360d;
+            font-weight: 600;
+        }
+ </style>
 
 
 
@@ -465,9 +493,9 @@
 
 <p>第6章画出了详细的B+树索引结构,现在对索引结构进行简化如下图: <font color="red">里面的数据是假设的</font></p>
 <p><strong>主键索引:</strong> 只画出了叶子结点中的记录真实数据部分</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814183104661.png" alt="image-20210814183104661"></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814183104661.png"></p>
 <p><strong>二级索引:</strong></p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814183400595.png" alt="image-20210814183400595"></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814183400595.png"></p>
 <h2 id="7-2-索引的代价"><a href="#7-2-索引的代价" class="headerlink" title="7.2 索引的代价:"></a>7.2 索引的代价:</h2><h3 id="7-2-1-空间代价"><a href="#7-2-1-空间代价" class="headerlink" title="7.2.1 空间代价:"></a>7.2.1 空间代价:</h3><p>每一个索引都是一颗B+树,而B+树的结点都是一个最大为16KB的数据页,如果数据量很大的话,那么会使用很多的数据页来存储B+树的结点.占用空间很多</p>
 <h3 id="7-2-2-时间代价"><a href="#7-2-2-时间代价" class="headerlink" title="7.2.2 时间代价:"></a>7.2.2 时间代价:</h3><ul>
 <li><p>排序代价:</p>
@@ -512,7 +540,7 @@
 <li><p>[38,79] : 边界条件是 <code>key2 &gt;= 38 and key2 &lt;= 79</code> , 这种扫描区间中含有多个值的区间称为 <code>范围扫描区间</code></p>
 </li>
 <li><p>对应到数轴上就是:</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814212755388.png" alt="image-20210814212755388"></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814212755388.png"></p>
 </li>
 </ul>
 </li>
@@ -545,14 +573,14 @@
 <h5 id="1-所有查询条件都可以生成合适的扫描区间"><a href="#1-所有查询条件都可以生成合适的扫描区间" class="headerlink" title="1. 所有查询条件都可以生成合适的扫描区间:"></a>1. 所有查询条件都可以生成合适的扫描区间:</h5><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key2 <span class="token operator">&gt;</span> <span class="token number">100</span> <span class="token operator">and</span> key2 <span class="token operator">&gt;</span> <span class="token number">200</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>生成的扫描区间为:</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814221320446.png" alt="image-20210814221320446"></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814221320446.png"></p>
 <blockquote>
 <p>and连接的查询条件是对两个扫描区间取交集</p>
 </blockquote>
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key2 <span class="token operator">&gt;</span> <span class="token number">100</span> <span class="token operator">or</span> key2 <span class="token operator">&gt;</span> <span class="token number">200</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>生成的扫描区间为:</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814221405324.png" alt="image-20210814221405324"></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814221405324.png"></p>
 <blockquote>
 <p>or连接的查询条件是对两个扫描区间取并集</p>
 </blockquote>
@@ -618,7 +646,7 @@
 <li><code>key_part1</code>相同,再根据<code>key_part2</code>列的值进行排序</li>
 <li><code>key_part1</code>和<code>key_part2</code>列的值都相同的情况下,再使用<code>key_part3</code>列的值进行排序</li>
 </ul>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814233953955.png" alt="image-20210814233953955"></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814233953955.png"></p>
 <p>举例</p>
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">=</span> <span class="token string">'a'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
@@ -646,7 +674,7 @@
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">&lt;</span> <span class="token string">'b'</span> <span class="token operator">and</span> key_part2 <span class="token operator">=</span> <span class="token string">'a'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>这个比较特殊,先看下叶子结点中二级索引的排列, 如果数据为红字的情况就会造成 <code>key_part1 &lt; 3 and key_part2 = 2</code>的查询条件,在使用符合索引的时候,只走key_part1,而不走key_part2,这是因为在<code>key_part1 &lt; 3</code>的前提下二级索引记录根本不是按照<code>key_part2</code>列的值排列的.</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210815001847253.png" alt="image-20210815001847253"></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210815001847253.png"></p>
 <p>所以实际上对扫描范围起到作用的只有查询条件<code>key_part1 &lt; 'b'</code>.扫描范围为: <code>[-∞,'b')</code>.</p>
 <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">&lt;=</span> <span class="token string">'b'</span> <span class="token operator">and</span> key_part2 <span class="token operator">=</span> <span class="token string">'a'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
@@ -811,13 +839,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/hello-world/">
+                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="B+树索引">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">B+树索引</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -832,11 +860,23 @@
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            pounds
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/" class="post-category">
+                                    MySQL是怎样运行的
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MySQL/">
+                        <span class="chip bg-color">MySQL</span>
+                    </a>
+                    
                 </div>
                 
             </div>
@@ -852,9 +892,9 @@
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="8_MySQL数据目录">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="8 MySQL数据目录">
                         
-                        <span class="card-title">8_MySQL数据目录</span>
+                        <span class="card-title">8 MySQL数据目录</span>
                     </div>
                 </a>
                 <div class="card-content article-content">

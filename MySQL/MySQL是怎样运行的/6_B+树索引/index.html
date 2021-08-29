@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Hello World, pounds">
+    <meta name="keywords" content="B+树索引, pounds">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Hello World | pounds</title>
+    <title>B+树索引 | pounds</title>
     <link rel="icon" type="image/svg+xml" href="/medias/surprise-regular.svg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -296,12 +296,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/19.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description post-title">Hello World</h1>
+                    <h1 class="description post-title">B+树索引</h1>
                 </div>
                 <div class="post-info">
                     
@@ -321,7 +321,7 @@
                     
                         <div class="info-break-policy">
                             | <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                            283
+                            4.3k
                         </div>
                     
 
@@ -441,12 +441,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/MySQL/">
+                                <span class="chip bg-color">MySQL</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/" class="post-category">
+                                MySQL是怎样运行的
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -463,86 +476,247 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+                <p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210813231933719.png"></p>
+<p>前面说过,每页都有一个<code>page directory</code>作为页中记录的目录,可以通过二分法快速定位页中某条记录,现在可以快速定位页中的记录了,但是如何定位到页就成了问题,索引就是解决这个问题的</p>
+<h2 id="6-1-没有索引如何查找"><a href="#6-1-没有索引如何查找" class="headerlink" title="6.1 没有索引如何查找"></a>6.1 没有索引如何查找</h2><h3 id="6-1-1-在页中查找"><a href="#6-1-1-在页中查找" class="headerlink" title="6.1.1 在页中查找:"></a>6.1.1 在页中查找:</h3><p>在页中查找一般是分为两种情况:</p>
+<ul>
+<li>以主键为搜索条件: 页目录中的槽快速定位某个主键,然后根据主键去快速定位某条记录</li>
+<li>以其他列作为条件: 对非主键列的查找无法通过页目录中的槽定位主键,只能从<code>Infimum</code>开始一个一个的遍历.</li>
+</ul>
+<p>在很多页中查找:</p>
+<p>在很多页中查找首先需要定位数据在那一页,然后才能在数据页中查找到数据.如果没有引入索引的话,无论是以主键为条件,或者以其他列为条件都无法快速定位数据在那一页,只能从第一页开始沿着双端链表逐一遍历.</p>
+<h2 id="6-2-索引"><a href="#6-2-索引" class="headerlink" title="6.2 索引:"></a>6.2 索引:</h2><h3 id="6-2-1-一个简易的索引方案"><a href="#6-2-1-一个简易的索引方案" class="headerlink" title="6.2.1 一个简易的索引方案:"></a>6.2.1 一个简易的索引方案:</h3><p>为了演示效果,数据示意图将会以下面的形式出现:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210813234348296.png"></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210813234402899.png"></p>
+<p>示例数据:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>index_demo<span class="token punctuation">`</span><span class="token punctuation">(</span>
+	c1 <span class="token keyword">INT</span><span class="token punctuation">,</span>
+    C2 <span class="token keyword">INT</span><span class="token punctuation">,</span>
+    C3 <span class="token keyword">char</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    PRIMERY <span class="token keyword">KEY</span><span class="token punctuation">(</span>c1<span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<span class="token keyword">Insert</span> <span class="token keyword">into</span> <span class="token punctuation">`</span>index_demo<span class="token punctuation">`</span> <span class="token keyword">VALUES</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token string">'U'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">9</span><span class="token punctuation">,</span><span class="token string">'D'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token string">'Y'</span><span class="token punctuation">)</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> <span class="token punctuation">`</span>index_demo<span class="token punctuation">`</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token string">'a'</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>为了演示效果,假设一个数据页中只能存放3条数据,大于3条就要开辟新的页来存放数据. 所以在插入上面三条记录之后,在页面中已经形成一条单向链表,且已经满了在执行第二条插入语句的时候,就会形成下面这种情况:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210813234416566.png"></p>
+<blockquote>
+<ol>
+<li>新生成的页号为什么是28? 因为在磁盘中多次申请磁盘空间可能不是连续的,因此页号页可能不是连续的</li>
+<li><code>Mysql</code>规定页号大的数据页中数据主键值要比页号小的数据页中数据主键值大,否则就需要将不满足要求的数据与旧数据页中满足要求的数据进行交换</li>
+</ol>
+</blockquote>
+<p>为了满足页 号大的数据页中数据主键值要比页号小的数据页中数据主键值大,交换的过程如下:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210813235037699.png"></p>
+<p>多次向 <code>index_demo</code>表中插入数据之后,如图:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210813235310187.png"></p>
+<p>由于数据页之间是一个双端链表的结构,想要定位数据页只能逐一遍历,为了提高定位数据的效率,给数据页建立对应的目录,每个目录包含下列两部分:</p>
+<ul>
+<li>页的用户记录中最小的主键值,用 <code>key</code> 来表示;</li>
+<li>页号,用 <code>page_no</code> 表示</li>
+</ul>
+<p>加上目录后如图:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210813235608778.png"></p>
+<p>为了能够像<code>page directory</code>中访问槽一样的访问, 数据页的目录项, 我们需要将这些目录项在<code>物理存储器</code>上连续存储.这个时候在<code>多页中定位数据的步骤</code>为:</p>
+<ul>
+<li>先从根据二分法快速定位目录项,从而找到记录所在的数据页</li>
+<li>然后去数据页中找数据</li>
+</ul>
+<h3 id="6-2-2-InnoDB中索引方案"><a href="#6-2-2-InnoDB中索引方案" class="headerlink" title="6.2.2 InnoDB中索引方案:"></a>6.2.2 InnoDB中索引方案:</h3><p>上面说到为了快速定位数据页从而给数据页的搞了一个目录项,并且要求目录项在物理存储中是可以连续存放的,但是会出现两个问题:</p>
+<ul>
+<li><code>InnoDB</code>使用页作为管理存储空间的基本单位,即 最多只能保证16KB的连续空间来存放数据. 如果记录数量一旦特别多,所有的目录项连续存储可能会出现问题</li>
+<li>我们可能会经常对数据进行增删改操作,如果某个页面中的数据都删除了,那么该页也没有存在的必要了,就意味着存放目录项的连续空间需要把之后的目录项都向前移动一下.太影响效率</li>
+</ul>
+<p><code>MySQL</code>对于这一问题的解决方案是 复用存储用户记录的数据页来存储目录项,将目录项当成用户记录分页存储(<code>只不过将用户记录换成了只有主键列和页号列的目录项</code>),以保证目录向是连续的,在每一页中同样会按照目录向记录中的主键值进行排列.</p>
+<p>为了区分目录项和用户记录, <code>Mysql</code>将目录项统称为<code>目录项记录</code>,即 在记录头信息中<code>record_type</code>字段的值设置为1.</p>
+<p>将目录项记录存放进数据页中之后,整个结构如图:</p>
+<p> <img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210814004524301.png"></p>
+<p><font color="red">目录项记录和用户记录的区别与联系:</font></p>
+<ul>
+<li>区别:<ul>
+<li>目录项记录头的<code>record_type</code>值为1,用户记录记录头的<code>record_type</code>值为0.</li>
+<li>目录记录只有索引列和页编号两列,用户记录可能有多个列(<code>用户自定义列</code>,<code>mysql添加的隐藏列</code>)</li>
+<li>每页目录记录中最小的那一条记录的记录头信息中<code>min_rec_flag</code>字段值为1.用户记录记录头<code>min_rec_flag</code>字段值为0</li>
+</ul>
+</li>
+<li>联系:<ul>
+<li>除了上面几点不同之外,其余的性质并没有区别.使用的是一样的数据页,<code>页面类型都在FILE HEADER中,值为 0x45BF</code>,页的结构也是一样的,主键同样会生成对应的页目录.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>目录记录的真实数据只会存放两个值, 一个是索引列的值,一个是页码</p>
+</blockquote>
+<p>有了目录项记录的数据页之后,举个查询主键为20的记录的例子,此时查询的过程为:</p>
+<ul>
+<li>在存放<code>目录项记录</code>的数据页中通过<code>页目录</code>定位到具体的目录项记录,然后根据目录项记录中的数据页页码,找到对应存放<code>用户记录</code>的数据页(即9页)</li>
+<li>再到9页中通过<code>页目录</code>定位到主键为20的记录,完成查找.</li>
+</ul>
+<p>一旦目录项多了超出了页面能存放的范围,就会像用户记录一样申请新的数据页来存放目录项,<code>多个存放目录项的数据页的结构如图</code>:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210814010439409.png"></p>
+<p>如果存放目录项的数据也变得非常多了,<code>Mysql</code>就会为这些存放目录项的数据页,创建他们对应的目录项,生成一个更高级的目录,以此类推逐渐形成一颗树一样的结构 —- 这就是<code>B+</code>树结构.</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210814010955356.png"></p>
+<p><strong>B+树,示意图:</strong></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210814011024445.png"></p>
+<blockquote>
+<p><code>mysql</code>规定B+树的叶子结点为0层,之后逐渐+1.</p>
+</blockquote>
+<p>假设一个数据页能够存放10条用户记录,所存放目录项记录的数据页能够存放1000条,那么B+树每层存储数据数量为:</p>
+<ul>
+<li>如果B+树只有1层,也就只有1个数据页,那么只能存储100条</li>
+<li>如果B+树有2层,那么记录数为 1000 * 100 = 100,000条</li>
+<li>如果B+树有3层,那么记录数为 1000 * 1000 * 100 = 100,000,000条</li>
+<li>如果B+树有4层,那么记录数为 1000 * 1000 * 1000 * 100 = 100,000,000,000条</li>
+</ul>
+<p>可以发现B+树4层就能够存储很多的数据,<code>mysql</code>在日常使用中B+树的层数是不会超过4层的,也就是只需要去4个数据页(3个目录项数据页,1个用户记录数据页)中就能够找到指定数据(<code>要以主键为条件</code>)</p>
+<h4 id="1-聚簇索引"><a href="#1-聚簇索引" class="headerlink" title="1. 聚簇索引:"></a>1. 聚簇索引:</h4><p>前面介绍的以主键大小来排序的B+树本身就是一个目录,或者本身就是一个索引,具有以下特点:</p>
+<ul>
+<li>使用记录主键值的大小进行记录和页的排序:<ul>
+<li>数据页中的任何记录都是按照主键值的大小顺序排成一个单向链表,页内记录被分成若干组,每个组里中主键值最大的记录的偏移量当做目录存放页<code>页目录</code>的槽里面</li>
+<li>存放记录的数据页也是按照页中记录的主键大小顺序排成一个双向链表</li>
+<li>存放目录记录的数据页分为不同层级,在同一层级的页也是按照页中目录记录的主键大小排成一个双端链表</li>
+</ul>
+</li>
+<li>B+树的叶子结点存放的是 <code>完整的用户记录</code>(完整的用户记录是指: 这个记录中存储了所有列的值,包括隐藏列).</li>
+</ul>
+<p>具有这两个特点的索引就是<code>聚簇索引</code>,<code>InnoDB</code>默认就是聚簇索引.并且在<code>InnoDB</code>中聚簇索引就是数据的存储方式(<code>所有用户数据存放于叶子结点中</code>), 即<code>索引即数据,数据即索引</code></p>
+<h4 id="2-二级索引"><a href="#2-二级索引" class="headerlink" title="2. 二级索引:"></a>2. 二级索引:</h4><p>当我们不以主键为索引创建出来的索引,具有以下特点:</p>
+<ul>
+<li>以普通列x的大小为记录和页的排序依据:<ul>
+<li>页内记录都是按照x值的大小顺序形成单链表,记录被分成多个小组,将组内x值最大的记录的偏移量存放在<code>页目录</code>中.</li>
+<li>每个数据页都是按照x值的大小顺序形成一个双向链表</li>
+<li>存放目录项的数据页都会按照目录项记录中索引列的值大小顺序形成一个双向链表</li>
+</ul>
+</li>
+<li>B+树的叶子结点存放的并不是完整的用户记录,真实的数据部分只有两个值,一个是索引列的值,一个是主键列的值.</li>
+</ul>
+<p>具有以上特点的索引就是 <code>二级索引</code>. <code>二级索引</code>是一个新的B+树,并不是主键形成的B+树,也就是说每个<code>二级索引</code>都是一颗B+树.</p>
+<p><code>二级索引</code>的查找过程:</p>
+<ol>
+<li><p>根据索引值快速定位到索引值所在的非叶子节点,如果该叶子结点没有满足条件的<code>不完整的用户记录</code>,就会沿着双向链表去下一个叶子结点中找是否有满足索引条件的用户记录</p>
+</li>
+<li><p>在非叶子结点中找到了符合条件的用户记录, 就会根据主键值去主键形成的聚簇索引中查找到<code>完整的用户记录</code></p>
+</li>
+<li><p>如果<code>二级索引</code>没有唯一性的约束,那么在主键聚簇索引中找到了一条<code>完整的记录</code>后还要回到<code>二级索引</code>中沿着叶子结点形成的双向链表中继续寻找下一个满足搜索条件的<code>不完整记录</code>,然后再一次去主键聚簇索引中查找,以此往复.</p>
+<blockquote>
+<p>根据<code>二级索引</code>非叶子节点中<code>不完整的用户记录</code>存储的主键值去主键聚簇索引中查找<code>完整用户记录</code>的过程 称为 <code>回表</code>.</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="3-联合索引"><a href="#3-联合索引" class="headerlink" title="3. 联合索引:"></a>3. 联合索引:</h4><p><code>联合索引</code>本质上也就是一个<code>二级索引</code></p>
+<p>处理可以使用单列作为索引,还可以使用多个列作为索引,不过他们之间是有排序优先级的,比如(a,b)这样的联合索引,会先以a为标准排序,如果a相同才会以b为标准进行排序.</p>
+<p>以示例数据来讲: 按照(c2,c3)构成的联合索引,如图</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210814015627353.png" alt="联合索引示意图"></p>
+<p>说明:</p>
+<ul>
+<li>联合索引的每条目录项的真实数据部分都包含 c2,c3, 页号这三个数据.</li>
+<li>c2先排序,c2相同再比较c3</li>
+<li>联合索引叶子结点中用户记录的真实数据部分包含 c2,c3 ,主键值这三个数据</li>
+<li>联合索引只会建立一个B+树,而不是创建多个B+树</li>
+</ul>
+<h3 id="6-2-3-B-树索引注意事项"><a href="#6-2-3-B-树索引注意事项" class="headerlink" title="6.2.3 B+树索引注意事项:"></a>6.2.3 B+树索引注意事项:</h3><h4 id="1-根页面永远不动"><a href="#1-根页面永远不动" class="headerlink" title="1. 根页面永远不动:"></a>1. 根页面永远不动:</h4><p>B+树的形成过程:</p>
+<ol>
+<li>为每个表创建B+树索引的时候, 最开是都会创建一个根节点页面.最开始没有数据的时候,根节点页面是什么都没有的</li>
+<li>随后插入数据的过程中,先向根页面中插入数据.</li>
+<li>当根页面中的可用空间使用完了,就会将根节点中所有数据复制到新分配的页面a中,然后对这个新页面进行页分裂作用,得到另一个页面b.然后将新插入数据按照主键值插入到页面a或者页面b中.<code>根结点升级为存储目录项的目录页面</code>.</li>
+</ol>
+<blockquote>
+<p>从整个过程来看,根节点变化的只是页面内的数据,根节点在创建之后页码就不会变化.页号会被记录下来,然后当<code>mysql</code>需要使用这个索引的时候,就会查询出对应索引根节点的页号,然后进行操作.</p>
+</blockquote>
+<h4 id="2-非叶子节点中目录项的唯一性"><a href="#2-非叶子节点中目录项的唯一性" class="headerlink" title="2. 非叶子节点中目录项的唯一性:"></a>2. 非叶子节点中目录项的唯一性:</h4><p>前面简单的将<code>二级索引</code>认为是 <code>索引列 + 页号</code>的搭配,但是会出现下面这个问题:</p>
+<p>以示例数据 c2列为索引的时候,会形成下图所示的索引:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210814022636149.png" alt="二级索引不唯一会产生的问题"></p>
+<p>当插入新数据 (9,1,c)的时候, 会发现根节点中所有的目录向索引列的值都是一样的,这样就无法定位新插入数据应该插入页4还是页5.</p>
+<p>实际上<code>二级索引</code>的目录项还是会将<code>主键存储下来</code>,用于处理上面这个问题. 即当索引列相同的时候,比较主键从而决定记录的大小.所有的二级索引都是这样的,哪怕是<code>UNIQUE</code>类型的二级索引,也是这样的(因为<code>UNIQUE列可能出现多个null值</code>,或者多条记录键值相同的情况<code>MVCC</code>)</p>
+<h4 id="3-一个页面至少容纳两条数据"><a href="#3-一个页面至少容纳两条数据" class="headerlink" title="3. 一个页面至少容纳两条数据:"></a>3. 一个页面至少容纳两条数据:</h4><p>主要是为了避免B+树层级增长过高.</p>
+<h3 id="6-2-4-MyISAM索引方案简介"><a href="#6-2-4-MyISAM索引方案简介" class="headerlink" title="6.2.4 MyISAM索引方案简介:"></a>6.2.4 MyISAM索引方案简介:</h3><p>MyISAM的索引方案与InnoDB的索引方案,最大的区别就是</p>
+<ul>
+<li>MyISAM中索引和数据分开存储,即 <code>索引是索引,数据是数据</code></li>
+<li>InnoDB中索引和数据是存储在一起的,即 <code>索引即数据,数据即索引</code></li>
+</ul>
+<p>MyISAM索引方案主要包含两部分:</p>
+<ul>
+<li><p>数据文件: 将表中的记录按照记录插入的顺序单独存储在一个文件中, 这个文件就称为<code>数据文件</code>.</p>
+<p>数据文件并不划分如同<code>InnoDB</code>中数据页一样的结构,而是来多少数据就往数据文件中存多少数据.</p>
+<p>MyISAM中数据在数据文件中是不会按照主键大小顺序排列的,而是按照插入的顺序排列.</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/6_B+%E6%A0%91%E7%B4%A2%E5%BC%95/image-20210814112858780.png" alt="MyISAM表中记录排列示意图"></p>
+</li>
+<li><p>索引文件: MyISAM会把索引信息单独存放到一个文件中,这个文件称为<code>索引文件</code>.</p>
+</li>
+<li><p>主键索引: MyISAM会为主键单独创建一个索引,但是主键索引叶子结点中用户记录存放的<code>不再是完整的用户记录</code>,而是主键值与行号</p>
+</li>
+<li><p>非主键索引: MyISAM也可以创建非主键索引,与<code>InnoDB</code>中的二级索引结构差不多.只不过</p>
+<p>在叶子结点中用户记录存放的是 索引列,主键列,记录在数据文件中的行号.</p>
+</li>
+</ul>
+<blockquote>
+<ol>
+<li>叶子结点中记录的是索引列+主键值+被查询数据在数据文件中的行号或者偏移量</li>
+<li>MyISAM的索引全是二级索引包括主键索引, 所以都会去进行一次回表操作,只不过由于索引叶子结点记录的是查询记录在数据文件中的行号,或者是偏移量,所以可以直接定位被查询操作,速度是不需要担心的.</li>
+<li><code>MyISAM</code>中,对于定长记录格式,直接使用行号来标记某条记录在数据文件中的精确位置.对于变长类型记录格式,在叶子结点中使用的是偏移量来精确定位数据文件中的位置.</li>
+</ol>
+</blockquote>
+<h3 id="6-2-5-索引sql"><a href="#6-2-5-索引sql" class="headerlink" title="6.2.5 索引sql:"></a>6.2.5 索引sql:</h3><p>创建索引:</p>
+<ul>
+<li><p>建表的时候同时创建索引:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>表名<span class="token punctuation">`</span><span class="token punctuation">(</span>
+	列<span class="token punctuation">,</span>
+    <span class="token punctuation">(</span><span class="token keyword">KEY</span> <span class="token operator">|</span> <span class="token keyword">INDEX</span><span class="token punctuation">)</span> 索引名 <span class="token punctuation">(</span>需要加索引的列<span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li><p>对已经存在的表,新增索引:</p>
+<pre class="line-numbers language-SQL" data-language="SQL"><code class="language-SQL">-- alter语句
+ALTER TABLE 表名 ADD (KEY|INDEX) 索引名 (需要加索引的列)
+-- create语句
+CREATE [UNIQUE | FULLTEXT | SPATIAL] INDEX index_name
+    [index_type]
+    ON tbl_name (key_part,...)
+    [index_option]
+    [algorithm_option | lock_option] ...
+ 
+ key_part: 需要加索引的列,可以指定排序规则
+    col_name [(length)] [ASC | DESC]
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+index_option: {
+    KEY_BLOCK_SIZE [=] value
+  | index_type
+  | WITH PARSER parser_name
+  | COMMENT 'string'
+}
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Test</span><span class="token punctuation">{</span>
-    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        <span class="token class-name">System</span><span class="token punctuation">.</span>sout<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"辣鸡"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+index_type: 索引类型
+    USING {BTREE | HASH} 
 
-<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> test<span class="token punctuation">:</span>
-    lallala<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+algorithm_option:
+    ALGORITHM [=] {DEFAULT | INPLACE | COPY}
 
+lock_option:
+    LOCK [=] {DEFAULT | NONE | SHARED | EXCLUSIVE}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li><p>删除索引:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> 表名 <span class="token keyword">DROP</span> <span class="token punctuation">(</span><span class="token keyword">KEY</span><span class="token operator">|</span><span class="token keyword">INDEX</span><span class="token punctuation">)</span> 索引名
 
-<pre class="line-numbers language-go" data-language="go"><code class="language-go"><span class="token keyword">package</span> main
+<span class="token number">2</span><span class="token punctuation">)</span> 使用 <span class="token keyword">DROP</span> <span class="token keyword">INDEX</span> 语句
+语法格式：
+<span class="token keyword">DROP</span> <span class="token keyword">INDEX</span> <span class="token operator">&lt;</span>索引名<span class="token operator">&gt;</span> <span class="token keyword">ON</span> <span class="token operator">&lt;</span>表名<span class="token operator">&gt;</span>
 
-<span class="token keyword">import</span> <span class="token string">"fmt"</span>
+语法说明如下：
+<span class="token operator">&lt;</span>索引名<span class="token operator">&gt;</span>：要删除的索引名。
+<span class="token operator">&lt;</span>表名<span class="token operator">&gt;</span>：指定该索引所在的表名。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li><p>修改索引:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 没有直接操作的语法,都是先删除原索引再新增索引</span>
+<span class="token comment">-- 先删除</span>
+<span class="token keyword">alter</span> <span class="token keyword">table</span> <span class="token keyword">user</span>
+<span class="token keyword">drop</span> <span class="token keyword">index</span> idx_user_username<span class="token punctuation">;</span>
+<span class="token comment">--再以修改后的内容创建同名索引</span>
+<span class="token keyword">create</span> <span class="token keyword">index</span> idx_user_username <span class="token keyword">ON</span> <span class="token keyword">user</span> <span class="token punctuation">(</span>username<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+<li><p>索引查看:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">show</span> <span class="token keyword">index</span> <span class="token keyword">from</span> table_name<span class="token punctuation">;</span>
+纵向查看：<span class="token keyword">show</span> <span class="token keyword">index</span> <span class="token keyword">from</span> table_name\G<span class="token punctuation">;</span>
+ 
+<span class="token number">2</span><span class="token punctuation">)</span> <span class="token keyword">show</span> <span class="token keyword">keys</span> <span class="token keyword">from</span> table_name<span class="token punctuation">;</span>
+纵向查看：<span class="token keyword">show</span> <span class="token keyword">keys</span> <span class="token keyword">from</span> table_name\G<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li>
+</ul>
 
-<span class="token comment">// 事务操作示例</span>
-<span class="token keyword">func</span> <span class="token function">transactionDemo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-	tx<span class="token punctuation">,</span> err <span class="token operator">:=</span> sqlxDB<span class="token punctuation">.</span><span class="token function">Begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 开启事务</span>
-	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
-		<span class="token keyword">if</span> tx <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
-			tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
-		<span class="token punctuation">}</span>
-		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"begin trans failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-		<span class="token keyword">return</span>
-	<span class="token punctuation">}</span>
-	sqlStr1 <span class="token operator">:=</span> <span class="token string">"Update t_go_study_user set name = '张三' where id=?"</span>
-	ret1<span class="token punctuation">,</span> err <span class="token operator">:=</span> tx<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span>sqlStr1<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
-	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
-		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
-		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"exec sql1 failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-		<span class="token keyword">return</span>
-	<span class="token punctuation">}</span>
-	affRow1<span class="token punctuation">,</span> err <span class="token operator">:=</span> ret1<span class="token punctuation">.</span><span class="token function">RowsAffected</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
-		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
-		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"exec ret1.RowsAffected() failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-		<span class="token keyword">return</span>
-	<span class="token punctuation">}</span>
-
-	sqlStr2 <span class="token operator">:=</span> <span class="token string">"Update t_go_study_user set name = '张三' where id=?"</span>
-	ret2<span class="token punctuation">,</span> err <span class="token operator">:=</span> tx<span class="token punctuation">.</span><span class="token function">Exec</span><span class="token punctuation">(</span>sqlStr2<span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
-	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
-		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
-		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"exec sql2 failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-		<span class="token keyword">return</span>
-	<span class="token punctuation">}</span>
-	affRow2<span class="token punctuation">,</span> err <span class="token operator">:=</span> ret2<span class="token punctuation">.</span><span class="token function">RowsAffected</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-	<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
-		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 回滚</span>
-		fmt<span class="token punctuation">.</span><span class="token function">Printf</span><span class="token punctuation">(</span><span class="token string">"exec ret1.RowsAffected() failed, err:%v\n"</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
-		<span class="token keyword">return</span>
-	<span class="token punctuation">}</span>
-
-	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span>affRow1<span class="token punctuation">,</span> affRow2<span class="token punctuation">)</span>
-	<span class="token keyword">if</span> affRow1 <span class="token operator">==</span> <span class="token number">1</span> <span class="token operator">&amp;&amp;</span> affRow2 <span class="token operator">==</span> <span class="token number">1</span> <span class="token punctuation">{</span>
-		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"事务提交啦..."</span><span class="token punctuation">)</span>
-		tx<span class="token punctuation">.</span><span class="token function">Commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// 提交事务</span>
-	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-		tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-		fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"事务回滚啦..."</span><span class="token punctuation">)</span>
-	<span class="token punctuation">}</span>
-
-	fmt<span class="token punctuation">.</span><span class="token function">Println</span><span class="token punctuation">(</span><span class="token string">"exec trans success!"</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<div class="uk-alert uk-alert-danger"><i class="fas fa-exclamation-triangle"></i> 紅色</div>
-<div class="uk-alert uk-alert-success"><i class="fa fa-check-circle"></i> 綠色</div>
-<div class="uk-alert uk-alert-warning"><i class="fa fa-exclamation-circle"></i> 黃色</div>
                 
             </div>
             <!-- 文章底部下划线 -->
@@ -556,7 +730,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/MySQL/">
+                                    <span class="chip bg-color">MySQL</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -600,18 +778,17 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/hello-world/">
+                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="5 InnoDB数据页结构">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">5 InnoDB数据页结构</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -621,18 +798,29 @@
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-29
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-08-29
+                        </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            pounds
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/" class="post-category">
+                                    MySQL是怎样运行的
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MySQL/">
+                        <span class="chip bg-color">MySQL</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -643,13 +831,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/5_InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E7%BB%93%E6%9E%84/">
+                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="5 InnoDB数据页结构">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="7 B+树索引的使用">
                         
-                        <span class="card-title">5 InnoDB数据页结构</span>
+                        <span class="card-title">7 B+树索引的使用</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
