@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="3 字符集和比较规则, pounds">
+    <meta name="keywords" content="1 初识MySQL, pounds">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>3 字符集和比较规则 | pounds</title>
+    <title>1 初识MySQL | pounds</title>
     <link rel="icon" type="image/svg+xml" href="/medias/surprise-regular.svg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -296,12 +296,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/6.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description post-title">3 字符集和比较规则</h1>
+                    <h1 class="description post-title">1 初识MySQL</h1>
                 </div>
                 <div class="post-info">
                     
@@ -321,7 +321,7 @@
                     
                         <div class="info-break-policy">
                             | <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                            2.3k
+                            3.1k
                         </div>
                     
 
@@ -476,226 +476,380 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="3-1-字符集和比较规则"><a href="#3-1-字符集和比较规则" class="headerlink" title="3.1 字符集和比较规则:"></a>3.1 字符集和比较规则:</h2><h3 id="3-1-1-字符集介绍"><a href="#3-1-1-字符集介绍" class="headerlink" title="3.1.1 字符集介绍:"></a>3.1.1 字符集介绍:</h3><p>数据在计算机中实际上是以二进制的关系存储的.</p>
-<p><strong>字符集: 是描述某个字符范围的编码规则</strong></p>
-<p>主要是解决两个问题:</p>
-<ul>
-<li>界定字符的范围,就是要将哪些字符转换成二进制数据</li>
-<li>二进制数据和字符之间如何转换,即 编码解码过程</li>
-</ul>
-<h3 id="3-1-2-比较规则简介"><a href="#3-1-2-比较规则简介" class="headerlink" title="3.1.2 比较规则简介:"></a>3.1.2 比较规则简介:</h3><p><strong>比较规则:</strong> 即确定两个字符之间的大小关系.不同字符集在<code>mysql</code>中的比较规则也是不相同的</p>
-<h3 id="3-1-3-一些重要的字符集"><a href="#3-1-3-一些重要的字符集" class="headerlink" title="3.1.3 一些重要的字符集:"></a>3.1.3 一些重要的字符集:</h3><ol>
-<li><p><code>ASCⅡ字符集</code>: 共<code>128</code>个字符,包括空格,标点,数字,大小写字母和一些不可见的字符.<code>一个字节</code>就可以表示所有的<code>ASCⅡ字符</code></p>
-</li>
-<li><p><code>ISO 8859-1字符集</code>:共<code>256</code>个字符,在<code>ASCⅡ</code>的基础上增加了<code>128</code>个西欧常用字符. 也可以使用<code>一个字节</code>表示所有字符</p>
-</li>
-<li><p><code>GB2312字符集</code>: 收录了 <code>汉字</code>以及<code>拉丁字母</code>,<code>希腊字母</code>,<code>日本平假名,片假名</code>,<code>俄语西里尔字母</code>;汉字共<code>6763</code>个,其他文字符号<code>682</code>个. <code>GB2312</code>也兼容了<code>ASCⅡ字符</code>,所以<code>当GB2312字符在ASCⅡ字符范围内,使用一个字节;不在就是用两个字节进行编码</code></p>
-</li>
-<li><p><code>GBK字符集</code>: 对<code>GB2312字符集</code>在字符范围上进行了扩充,编码方式与<code>GB2312字符集</code>相同</p>
-</li>
-<li><p><code>UTF-8字符集</code>: 字符范围几乎涵盖当今世界各个国家/地区所使用的字符.编码方式兼容<code>ASCⅡ</code>,采用变长编码方式,一个<code>UTF8字符</code>可能需要<code>1~4个字节</code></p>
-<blockquote>
-<p><code>UTF-8</code>实际上是<code>Unicode字符集</code>的一种编码方案.</p>
-</blockquote>
-</li>
-</ol>
-<h2 id="3-2-MySQL支持的字符集和比较规则"><a href="#3-2-MySQL支持的字符集和比较规则" class="headerlink" title="3.2 MySQL支持的字符集和比较规则"></a>3.2 MySQL支持的字符集和比较规则</h2><h3 id="3-2-1-utf8和utf8mb4"><a href="#3-2-1-utf8和utf8mb4" class="headerlink" title="3.2.1 utf8和utf8mb4:"></a>3.2.1 <code>utf8</code>和<code>utf8mb4</code>:</h3><p>由于日常常用的字符使用<code>1~3</code>个字节基本就可以表示,为了提高编码效率,MySQL在处理<code>UTF8字符集</code>的时候从字符集名称上做了区分:</p>
-<ul>
-<li><code>utf8mb3</code>: mysql中<code>utf8</code>的别名,通常使用的<code>uft8</code>字符集就是这种,只使用<code>1~3个字节</code>表示字符.</li>
-<li><code>utf8mb4</code>: 真正意义上的<code>utf8</code>字符集,使用<code>1~4</code>个字节表示字符. <code>可以存储emoji表情</code></li>
-</ul>
-<h3 id="3-2-2-查看字符集"><a href="#3-2-2-查看字符集" class="headerlink" title="3.2.2 查看字符集:"></a>3.2.2 查看字符集:</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">show</span> <span class="token punctuation">(</span><span class="token keyword">character</span> <span class="token keyword">set</span> <span class="token operator">|</span> <span class="token keyword">charset</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token operator">like</span> <span class="token string">'字符集名称匹配模式'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+                <h2 id="1-1-MySQL的C-S架构"><a href="#1-1-MySQL的C-S架构" class="headerlink" title="1.1 MySQL的C/S架构:"></a>1.1 MySQL的C/S架构:</h2><p>MySQL是典型的C/S架构, 由 <code>客户端程序Client</code> 和 <code>服务端程序server</code>两部分组成.</p>
+<p>MySQL的大致运行过程为: 服务端程序直接与要存储的数据打交道,多个客户端程序可以连接到这个服务器程序,向服务器程序发送 CRUD请求,然后服务端程序根据这些请求进行相应的处理,最后将结果响应给客户端.</p>
+<h2 id="1-2-MySQL的安装"><a href="#1-2-MySQL的安装" class="headerlink" title="1.2 MySQL的安装:"></a>1.2 MySQL的安装:</h2><p>[参考链接](zip包安装mysql： <a target="_blank" rel="noopener" href="https://www.cnblogs.com/qixing/p/12271499.html">https://www.cnblogs.com/qixing/p/12271499.html</a>)</p>
+<p><strong>注意事项</strong></p>
+<p>配置文件中一些重要文件的路径要写对, <font color="red">都需要根据自己具体的文件所在路径来写</font>,比如: </p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token punctuation">[</span>mysqld<span class="token punctuation">]</span>
+<span class="token comment"># binlog 配置</span>
+log<span class="token punctuation">-</span>bin=/usr/local/mysql/logs/mysql<span class="token punctuation">-</span>bin.log
+expire<span class="token punctuation">-</span>logs<span class="token punctuation">-</span>days=14
+max<span class="token punctuation">-</span>binlog<span class="token punctuation">-</span>size=500M
+server<span class="token punctuation">-</span>id=1
+<span class="token comment"># GENERAL</span>
+basedir=/usr/local/mysql
+datadir=/usr/local/mysql/data
+socket=/usr/local/mysql/mysql.sock
+user=mysql
+default<span class="token punctuation">-</span>storage<span class="token punctuation">-</span>engine=InnoDB
+character<span class="token punctuation">-</span>set<span class="token punctuation">-</span>server=utf8
+lower_case_table_names = 1
+explicit_defaults_for_timestamp=true
+<span class="token punctuation">[</span>mysqld_safe<span class="token punctuation">]</span>
+log<span class="token punctuation">-</span>error=/usr/local/mysql/mysql<span class="token punctuation">-</span>error.log
+pid<span class="token punctuation">-</span>file=/usr/local/mysql/mysqld.pid
+<span class="token punctuation">[</span>client<span class="token punctuation">]</span>
+socket=/usr/local/mysql/mysql.sock
+<span class="token punctuation">[</span>mysql<span class="token punctuation">]</span>
+default<span class="token punctuation">-</span>character<span class="token punctuation">-</span>set=utf8
+socket=/usr/local/mysql/mysql.sock<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808175539113.png" alt="image-20210808175539113"></p>
-<p>说明:</p>
-<ol>
-<li><code>Default collation</code>: 表示该字符集默认的比较规则</li>
-<li><code>Maxlen</code>: 表示该字符集最多使用多少个字节来描述字符.</li>
-</ol>
-<blockquote>
-<p>注意: mysql中字符集名称都是小写的</p>
-</blockquote>
-<h3 id="3-2-3-查看比较规则"><a href="#3-2-3-查看比较规则" class="headerlink" title="3.2.3 查看比较规则:"></a>3.2.3 查看比较规则:</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">show</span> collation <span class="token punctuation">[</span><span class="token operator">like</span> <span class="token string">'字符集匹配模式'</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>mysql</code>通过zip包安装之后,文件目录为:  学习的时候<code>mysql</code>程序是安装在<code>/usr/local/mysql</code>目录下面的</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/1_%E5%88%9D%E8%AF%86MySQL/image-20210805221313354.png"></p>
+<h3 id="1-2-1-bin目录下的可执行文件"><a href="#1-2-1-bin目录下的可执行文件" class="headerlink" title="1.2.1 bin目录下的可执行文件"></a>1.2.1 bin目录下的可执行文件</h3><p><code>bin</code>目录下面放了很多的<code>mysql</code>程序的可执行文件,大致如下:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/1_%E5%88%9D%E8%AF%86MySQL/image-20210805221420290.png"></p>
+<p>启动<code>mysql</code>: 通常是通过 上面列举的可执行文件的<code>相对</code>/<code>绝对</code>路径来启动<code>mysql</code>.比如: <code>/usr/local/mysql/bin/mysqld</code>,但是为了在任何地方都可以直接使用<code>mysql</code>的可执行文件, 会将<code>mysql</code>的<code>bin</code>目录加入到环境变量文件中去.</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/1_%E5%88%9D%E8%AF%86MySQL/image-20210805221952074.png"></p>
+<h2 id="1-3-启动mysql服务端程序"><a href="#1-3-启动mysql服务端程序" class="headerlink" title="1.3 启动mysql服务端程序:"></a>1.3 启动<code>mysql</code>服务端程序:</h2><h3 id="1-3-1-mysqld"><a href="#1-3-1-mysqld" class="headerlink" title="1.3.1 mysqld:"></a>1.3.1 <code>mysqld</code>:</h3><p><code>mysqld</code>可执行文件就表示一个<code>mysql</code>服务器程序,运行<code>mysqld</code>就可以启动一个<code>mysql</code>进程. <strong>但是这个可执行文件不常用</strong></p>
+<h3 id="1-3-2-mysqld-safe"><a href="#1-3-2-mysqld-safe" class="headerlink" title="1.3.2 mysqld_safe:"></a>1.3.2 <code>mysqld_safe</code>:</h3><p><code>mysqld_safe</code>是一个启动脚本, 在脚本中会去调用<code>mysqld</code>可执行文件来启动一个 <code>mysql</code>进程, 然后持续监控服务器的运行状态, <strong>当服务器出现错误的时候可以帮助重启服务器程序</strong>. 程序运行期间的<code>错误日志</code>或者其他<code>诊断日志</code>被存放在数据目录(我的路径为: <code>/usr/local/mysql/data</code>)中一个<code>.err</code>后缀的文件里面.</p>
+<h3 id="1-3-3-mysql-server"><a href="#1-3-3-mysql-server" class="headerlink" title="1.3.3 mysql.server:"></a>1.3.3 <code>mysql.server</code>:</h3><p><code>mysql.server</code>也是启动脚本, 它会简介的调用<code>mysald_safe</code>. </p>
+<p><code>mysql.server</code>实际上是一个链接文件,指向的是 <code>/usr/local/mysql/support-files/mysql.server</code></p>
+<p><code>mysql.server</code>启动<code>mysql</code>程序:  <code>mysql.server start</code></p>
+<p><code>mysql.server</code>停止<code>mysql</code>程序:  <code>mysql.server stop</code></p>
+<h3 id="1-3-4-mysqld-multi"><a href="#1-3-4-mysqld-multi" class="headerlink" title="1.3.4 mysqld_multi:"></a>1.3.4 <code>mysqld_multi</code>:</h3><p><code>mysqld_multi</code>: 使用来启动多个<code>mysql</code>服务器程序的,也可以报告服务器程序的运行状态,本质上还是是一个 <code>shell</code>脚本.</p>
+<h2 id="1-4-启动mysql客户端程序"><a href="#1-4-启动mysql客户端程序" class="headerlink" title="1.4 启动mysql客户端程序:"></a>1.4 启动<code>mysql</code>客户端程序:</h2><p><code>bin</code>目录下面有许多的客户端程序,如: <code>mysqladmin</code>,<code>mysqldump</code>,<code>mysqlcheck</code>等等.重点关注名字为 <code>mysql</code> 的可执行文件.</p>
+<p>通过<code>mysql</code>可执行文件常用格式:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">mysql -h主机ip -P端口号 -D数据库名 -u用户名 -p密码<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808180418418.png" alt="image-20210808180418418"></p>
-<p><strong>比较规则的命名:</strong></p>
-<ul>
-<li><p>比较规则都是由与其关联的字符集的名称开头,如图中都是<code>utf8</code>的比较规则</p>
-</li>
-<li><p><code>_</code>之后紧跟的是该规则适用的语种名称.如: <code>utf8_slovak_ci</code>表示斯洛伐克语言的比较规则</p>
-</li>
-<li><p><code>_</code>之后紧跟的是该规则是否区分对应语言中某些性质,如<code>大小写</code>,<code>重音</code>等</p>
 <table>
 <thead>
 <tr>
-<th>后缀</th>
-<th>描述</th>
+<th>-h</th>
+<th align="left">表示<code>mysql</code>服务器程序所在的主机i地址,本地连接可以省略这个参数</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>_ai</td>
-<td>不区分重音(accent insensitive)</td>
+<td>-P</td>
+<td align="left">表示<code>mysql</code>服务器程序所使用的端口号</td>
 </tr>
 <tr>
-<td>_as</td>
-<td>区分重音(accent sensitive)</td>
+<td>-D</td>
+<td align="left">表示要连接<code>mysql</code>服务器程序中的哪一个数据库</td>
 </tr>
 <tr>
-<td>_ci</td>
-<td>不区分大小写(case insensitive)</td>
+<td>-u</td>
+<td align="left">使用哪一个用户来链接<code>mysql</code>服务器程序</td>
 </tr>
 <tr>
-<td>_cs</td>
-<td>区分大小写(case sensitive)</td>
-</tr>
-<tr>
-<td>_bin</td>
-<td>二进制形式比较(binary)</td>
+<td>-p</td>
+<td align="left">密码</td>
 </tr>
 </tbody></table>
-</li>
-</ul>
-<blockquote>
-<p>每个字符集都有很多的比较规则,<code>show collation</code>语句查询出来的信息中,<code>default</code>为yes的那一种比较规则就是默认比较规则</p>
-</blockquote>
-<h2 id="3-3-mysql中的应用"><a href="#3-3-mysql中的应用" class="headerlink" title="3.3 mysql中的应用:"></a>3.3 mysql中的应用:</h2><h3 id="3-3-1-不同级别的字符集和比较规则"><a href="#3-3-1-不同级别的字符集和比较规则" class="headerlink" title="3.3.1 不同级别的字符集和比较规则:"></a>3.3.1 不同级别的字符集和比较规则:</h3><p>mysql字符集和比较规则分成了四个级别:</p>
-<ul>
-<li>服务器级别</li>
-<li>数据库级别</li>
-<li>表级别</li>
-<li>列级别</li>
-</ul>
-<h4 id="1-服务器级别"><a href="#1-服务器级别" class="headerlink" title="1. 服务器级别:"></a>1. 服务器级别:</h4><p>服务器级别的字符集和比较规则,通过两个系统变量来设置.</p>
-<ul>
-<li><code>character_set_server</code>: 服务器级别字符集</li>
-<li><code>collation_server</code>: 服务器级别比较规则</li>
-</ul>
-<p><strong>两个变量的查询:</strong></p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 查询字符集</span>
-<span class="token keyword">SHOW</span> VARIABLES <span class="token operator">LIKE</span> <span class="token string">'character_set_server'</span><span class="token punctuation">;</span>
-<span class="token comment">-- 查比较规则</span>
-<span class="token keyword">SHOW</span> VARIABLES <span class="token operator">LIKE</span> <span class="token string">'collation_server'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808182132027.png" alt="image-20210808182132027"></p>
-<p><strong>两个变量的设置:</strong></p>
-<p>可以通过 <code>SET</code>语句和<code>配置文件</code>的方式设置这两个系统变量</p>
-<h4 id="2-数据库级别"><a href="#2-数据库级别" class="headerlink" title="2. 数据库级别:"></a>2. 数据库级别:</h4><p>数据库级别的字符集和比较规则,通过两个系统变量来设置:</p>
-<ul>
-<li><code>character_set_database</code>: 字符集</li>
-<li><code>collation_database</code>: 比较规则</li>
-</ul>
-<p><strong>变量查询:</strong> 跟服务器级别没区别,只是换下变量名</p>
-<p><strong>变量修改:</strong></p>
-<p>在创建数据库的时候就可以指定字符集和比较规则:</p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 创建的时候设置</span>
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> 数据库名
-	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名<span class="token punctuation">]</span>
-	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> COLLATION 比较规则名字<span class="token punctuation">]</span><span class="token punctuation">;</span>
-	
-<span class="token comment">-- 修改</span>
-<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> 数据库名
-	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名<span class="token punctuation">]</span>
-	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> COLLATION 比较规则名字<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><strong>注意事项:</strong></p>
-<ol>
-<li>如果没有设置数据库级别的字符集和比较规则,那么就会使用服务器级别的字符集和比较规则</li>
-<li><code>character_set_database</code>和<code>collation_database</code>这两个变量只是用来给用户展示当前数据库使用的字符集和比较规则,并不能通过<code>SET</code>这两个变量来改变当前数据库的字符集和比较规则.</li>
+<p>链接成功后如图:  本地连接省略了部分参数</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/1_%E5%88%9D%E8%AF%86MySQL/image-20210805224537807.png"></p>
+<p>退出<code>mysql</code>客户端程序: <code>quit</code>,<code>exit</code>,<code>\q</code>等命令都可以退出</p>
+<h3 id="1-4-1-连接注意事项"><a href="#1-4-1-连接注意事项" class="headerlink" title="1.4.1 连接注意事项:"></a>1.4.1 连接注意事项:</h3><ol>
+<li><code>不要显示通过mysql -pxxxx去连接服务器</code>: 通过<code>history</code>,<code>ps</code>之类的命令可以看到</li>
+<li><code>一定要显示连接的话,-p和密码之间不能有空格</code>: <code>-p</code>之后的任何字符都会被认为是密码的一部分,如果密码含有特殊字符还需要转义</li>
+<li><code>参数之间没有顺序要求</code>.</li>
+<li><code>unix系统中,如果不指定-u参数,会使用系统当前用户作为mysql用户去连接服务器,win系统默认是ODBC</code>.</li>
 </ol>
-<h4 id="3-表级别"><a href="#3-表级别" class="headerlink" title="3. 表级别:"></a>3. 表级别:</h4><p>表级别没有字符集和比较规则的系统变量</p>
-<p><strong>设置表级别的字符集和比较规则:</strong></p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 建表设置</span>
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> 表名 <span class="token punctuation">(</span>列信息<span class="token punctuation">)</span>
-	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名称<span class="token punctuation">]</span>
-	<span class="token punctuation">[</span>COLLATION 比较规则名字<span class="token punctuation">]</span><span class="token punctuation">;</span>
-	
-<span class="token comment">-- 修改</span>
-<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> 表名 <span class="token punctuation">(</span>列信息<span class="token punctuation">)</span>
-	<span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token keyword">DEFAULT</span><span class="token punctuation">]</span> <span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名称<span class="token punctuation">]</span>
-	<span class="token punctuation">[</span>COLLATION 比较规则名字<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><strong>注意事项:</strong></p>
+<h2 id="1-5-客户端与服务端的连接过程"><a href="#1-5-客户端与服务端的连接过程" class="headerlink" title="1.5 客户端与服务端的连接过程:"></a>1.5 客户端与服务端的连接过程:</h2><h3 id="1-5-1-TCP-IP"><a href="#1-5-1-TCP-IP" class="headerlink" title="1.5.1 TCP/IP:"></a>1.5.1 TCP/IP:</h3><p><code>mysql</code>程序是一个<code>c/s</code>架构的程序,底层是依靠<code>tcp/ip</code>网络通信协议来实现<code>c/s</code>之间的通信.<code>tcp/ip</code>协议是通过 <code>ip+端口号</code>来确定一个应用层程序的.而服务端程序则会持续监听<code>默认端口号</code>或者<code>启动时指定的其他端口号</code></p>
+<p><code>mysql</code>服务端程序默认的端口号是: <code>3306</code>.也可以通过 <code>mysqld -P端口号</code>在服务器程序启动的时候使用其他端口作为服务器程序监听的端口号.</p>
+<h3 id="1-5-2-命名管道和共享内存"><a href="#1-5-2-命名管道和共享内存" class="headerlink" title="1.5.2 命名管道和共享内存:"></a>1.5.2 命名管道和共享内存:</h3><p>win系统上可以给客户端程序和服务器程序之间使用<code>命名管道</code>或<code>共享内存</code>进行通信,不过启动时需要添加一些参数:</p>
 <ol>
-<li>如果建表的时候没有设置字符集和比较规则,那么就会使用表所在数据库的字符集和比较规则.</li>
-</ol>
-<h4 id="4-列级别"><a href="#4-列级别" class="headerlink" title="4. 列级别:"></a>4. 列级别:</h4><p>列级别没有字符集和比较规则的系统变量</p>
-<p><strong>设置列级别的字符集和比较规则:</strong></p>
-<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 建表设置</span>
-<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> 表名 <span class="token punctuation">(</span>
-    列名 字符串类型 <span class="token punctuation">[</span><span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名称<span class="token punctuation">]</span> <span class="token punctuation">[</span>COLLATION 比较规则名<span class="token punctuation">]</span><span class="token punctuation">,</span>
-    其他列信息
-<span class="token punctuation">)</span><span class="token punctuation">;</span>
-	
-<span class="token comment">-- 修改</span>
-<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> 表名 <span class="token keyword">MODIFY</span> 列名 字符串类型 <span class="token punctuation">[</span><span class="token keyword">CHARACTER</span> <span class="token keyword">SET</span> 字符集名称<span class="token punctuation">]</span> <span class="token punctuation">[</span>COLLATION 比较规则名称<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p><strong>注意事项:</strong></p>
-<ol>
-<li>如果建表的时候没有设置列的字符集和比较规则,那么就会使用列所在表的字符集和比较规则.</li>
-<li>修改列的字符集时,如果列中的数据不能使用修改后的字符集表示,则会发生错误.</li>
-</ol>
-<h4 id="5-仅修改字符集或比较规则"><a href="#5-仅修改字符集或比较规则" class="headerlink" title="5. 仅修改字符集或比较规则:"></a>5. 仅修改字符集或比较规则:</h4><p>字符集和比较规则之间是相互关联的,如果仅仅修改其中某一项,另外一项也会变成对应的值</p>
-<ul>
-<li>仅修改字符集,则 比较规则将变为修改后的字符集默认的比较规则</li>
-<li>仅修改比较规则, 则 字符集将变为修改后的比较规则对应的字符集</li>
+<li>使用<code>命名管道</code>进行进程之间通信:<ul>
+<li> 启动服务器程序的时候,需要加上<code>--enable-named-pipe</code>参数</li>
+<li> 启动客户端程序的时候,需要加上 <code>--pipe</code>或者 <code>--prototype=pipe</code></li>
 </ul>
-<h3 id="3-3-2-c-s通信过程中使用的字符集"><a href="#3-3-2-c-s通信过程中使用的字符集" class="headerlink" title="3.3.2 c/s通信过程中使用的字符集:"></a>3.3.2 c/s通信过程中使用的字符集:</h3><ol>
-<li><p>客户端向服务器发送数据的时候,会使用一种字符集对数据进行编码,服务器接收到数据之后会对数据进行解码</p>
 </li>
-<li><p>字符集转换: 就是服务器接收到数据之后使用与客户端相同的字符集解码,然后再用其他字符集对数据进行编码</p>
-</li>
-<li><p>一次查询请求字符集的变化:</p>
-<ol>
-<li><p>客户端发送请求: </p>
-<p>客户端在发送查询请求的时候,默认使用的字符集与系统使用的字符集相同,使用该字符集给数据进行编码.</p>
-<blockquote>
-<p>特别的: win系统下,可以使用<code>--defualt-character-set</code>启动项设置客户端使用的字符集,<code>unix系统</code>不行</p>
-</blockquote>
-</li>
-<li><p>服务器接收请求:</p>
-<p>服务器接收到客户端编码之后的二进制字节序列后,会为当前客户端维护一个<code>SESSION范围的变量 --- character_set_client</code>,该变量表示的是客户端在编码数据的时候使用的字符集.</p>
-<p>如果<code>character_set_client</code>表示的字符集不能解码客户端的请求,则 报错</p>
-</li>
-<li><p>服务器处理请求:</p>
-<p>在真正处理之前,会将请求数据使用 <code>character_set_client</code>表示的字符集进行解码,解码之后使用<code>SESSION 范围变量 cahracter_set_connect</code>对数据进行编码,称为一个新的字节序列</p>
-<p><code>character_set_client</code> 变量的作用是: 描述服务器接收到请求数据并解码之后,要想正确表示客户端表达的语义应该使用什么字符集进行编码.</p>
-</li>
-<li><p>服务器响应之前对响应数据进行编码:</p>
-<p>将查询结果通过数据本身在Mysql中使用的字符集进行解码,然后根据<code>SESISION范围变量 character_set_result</code>表示的字符集进行编码,编码之后发送给客户端</p>
-</li>
-<li><p>客户端接收到相应之后:</p>
-<p>使用默认的字符集对数据进行解码,然后展示给用户</p>
+<li>使用<code>共享内存</code>进行进程之间通信:<ul>
+<li>启动服务器,加上<code>--shared-memory</code></li>
+<li>服务器启动之后共享内存就是本地客户端程序默认的链接方式,也可以在启动客户端,加上<code>--protocol=memory</code>来链接</li>
+</ul>
 </li>
 </ol>
+<h3 id="1-5-3-UNIX域套接字"><a href="#1-5-3-UNIX域套接字" class="headerlink" title="1.5.3 UNIX域套接字:"></a>1.5.3 UNIX域套接字:</h3><p>当服务器和客户端都是运行在<code>UNIX系统</code>上的时候,可以使用<code>UNIX域套接字</code>进行进程之间通信</p>
+<p>开启方法: </p>
+<ul>
+<li><p>服务器默认开启: 启动客户端程序的时候 <code>不指定-h参数</code>、<code>-h参数为localhost</code> 或者 <code>指定--protocol=socket</code>都可以开启<code>UNIX域套接字</code>进行进程之间通信.</p>
 </li>
-<li><p>交换过程流程图:</p>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808195044276.png" alt="image-20210808195044276"></p>
+<li><p>客户端显示开启: <code>mysql -hlocalhost -uroot --socket=文件路径</code></p>
 </li>
-<li><p>几个变量的总结:</p>
+</ul>
+<p>默认的<code>UNIX域套接字文件</code>为 <code>/tmp/mysql.sock</code>,可以通过 <code>mysqld --socket=文件路径</code>修改.</p>
+<h2 id="1-6-服务端程序处理客户端请求"><a href="#1-6-服务端程序处理客户端请求" class="headerlink" title="1.6 服务端程序处理客户端请求:"></a>1.6 服务端程序处理客户端请求:</h2><p>无论客户端进程和服务端进程采用什么方式通信,最后客户端程序的请求都会转换成一段文本(<code>MYSQL语句</code>),服务器进程处理后再向客户端进程响应一段文本<code>处理结果</code></p>
+<p>整个处理过程大致如下: </p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/1_%E5%88%9D%E8%AF%86MySQL/image-20210805231436699.png"></p>
+<h3 id="1-6-1-处理连接"><a href="#1-6-1-处理连接" class="headerlink" title="1.6.1 处理连接:"></a>1.6.1 处理连接:</h3><p><code>mysql</code>对于处理客户端请求的线程采用了<code>池化</code>思想来管理.每当有客户端请求过来,服务器进程都会创建一个线程专门与这个客户端进行交互; 当客户端与服务器断开连接的时候,线程不会被销毁,而是被集中缓存起来,待后续连接过来继续使用.</p>
+<p>客户端发送给服务端的连接,会携带<code>主机信息</code>,<code>用户名</code>,<code>密码</code>等信息,服务端会对这些信息进行校验,通过的连接服务端才会创建线程与其建立连接.</p>
+<h3 id="1-6-2-解析与优化"><a href="#1-6-2-解析与优化" class="headerlink" title="1.6.2 解析与优化:"></a>1.6.2 解析与优化:</h3><p>连接建立之后,服务端已经获取到了客户端的文本请求,然后开始对文本请求进行处理,比较重要的部分是: <code>查询缓存</code>,<code>语法解析</code>,<code>查询优化</code></p>
+<ol>
+<li>查询缓存: <code>MYSQL</code>服务器会对之前已经处理过的文本请求 和 请求结果进行缓存,如果当前查询是已经处理过的,直接将对应的结果返回给客户端;如果没有处理过就会进行下一步处理.<ul>
+<li>缓存不命中的原因:<ul>
+<li>如果两个查询请求有<code>任何字符上的不同</code>(如: 空格、注释、大小写),都会造成缓存不命中</li>
+<li>如果查询请求中包含某些系统函数,用户自定义变量和函数、系统表,如: <code>mysql</code>、<code>information_schema</code>等</li>
+<li><code>mysql</code>的缓存系统会监测涉及的每张表,只要该表的<code>结构</code>或者<code>数据</code>被修改,那么 与该表关联的所有查询缓存都会被删除</li>
+</ul>
+</li>
+<li>查询缓存的缺点: 查询缓存可以提高查询效率,但是也会存在对缓存数据进行维护的开销<ul>
+<li>每次都要去查询缓存中检索</li>
+<li>查询请求处理完之后要更新缓存数据</li>
+<li>维护该查询缓存对应的内存区域等</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>语法解析: 如果没有命中缓存,就会进行真正的查询处理.<code>MYSQL</code>会对查询请求文本进行解析,判断语法是否正确,然后从文本中将要查询的表、和查询条件提取出来,存放在<code>MYSQL</code>服务器内部使用的结构上</li>
+<li>查询优化: 在语法解析之后,<code>MYSQL</code>会对查询语句进行优化.优化后的结果就是生成一个执行计划.</li>
+</ol>
+<h3 id="1-6-3-存储引擎"><a href="#1-6-3-存储引擎" class="headerlink" title="1.6.3 存储引擎:"></a>1.6.3 存储引擎:</h3><p><code>查询优化</code>之后还没有去访问表中的数据.<code>MYSQL</code>服务器将数据的<code>存储</code>和<code>提取</code>操作都封装到了一个名为 <code>存储引擎</code>的模块里面.</p>
+<p><code>存储引擎</code>主要还是负责 <code>物理上如何表示数据记录</code>、<code>如何从逻辑上的表中读取数据</code>、<code>怎么把数据写入到具体的物理存储器上</code>等</p>
+<p>为了方便管理, <code>MYSQL</code>处理请求的过程大致被分为了两部分: <code>server层</code>(连接管理,查询缓存,语法解析,查询缓存),<code>存储引擎层(存取真实数据的功能)</code>.所以在<code>server层</code>堆语法进行优化完毕之后,只需要按照<code>执行计划</code>去调用底层存储引擎提供的接口获取到数据后返回给客户端.通常是以一条<code>记录</code>为单位.</p>
+<p>以<code>SELECT</code>为例: <code>server层</code>按照执行计划向<code>存储引擎层</code>获取一条<code>记录</code>然后判断是否符合<code>where</code>条件,如果符合就返回给客户端(存入一个缓冲区,缓冲区满了一起flush出去),不符合就跳过该数据,然后向<code>存储引擎层</code>获取下一条数据,以此往复.</p>
+<h2 id="1-7-常用的存储引擎"><a href="#1-7-常用的存储引擎" class="headerlink" title="1.7 常用的存储引擎:"></a>1.7 常用的存储引擎:</h2><table>
+<thead>
+<tr>
+<th align="left">存储引擎</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ARCHIVE</td>
+<td align="center">用于数据文档(插入之后不能再被修改)</td>
+</tr>
+<tr>
+<td align="left">BLACKHOLE</td>
+<td align="center">丢弃写操作,读操作会返回空内容</td>
+</tr>
+<tr>
+<td align="left">CSV</td>
+<td align="center">在存储数据的时候,以逗号分隔数据项</td>
+</tr>
+<tr>
+<td align="left">FEDERATED</td>
+<td align="center">用来访问远程表</td>
+</tr>
+<tr>
+<td align="left">InnoDB</td>
+<td align="center">支持事务,行锁,外键</td>
+</tr>
+<tr>
+<td align="left">MyISAM</td>
+<td align="center">只要的非事务处理存储引擎</td>
+</tr>
+<tr>
+<td align="left">MEMORY</td>
+<td align="center">数据存储在内存,不存储在磁盘里面;多用于临时表</td>
+</tr>
+<tr>
+<td align="left">MERGE</td>
+<td align="center">用来管理多个MyISAM表构成的表集合</td>
+</tr>
+<tr>
+<td align="left">NDB</td>
+<td align="center">MySQL集群专用存储引擎</td>
+</tr>
+</tbody></table>
+<p>其中最常用的是 <code>InnoDB</code>,<code>MyISAM</code>和<code>MEMORY</code>.</p>
+<p>支持的功能:</p>
 <table>
 <thead>
 <tr>
-<th>系统变量(SESSION范围)</th>
-<th>作用</th>
+<th align="left">Feature</th>
+<th align="left">MyISAM</th>
+<th align="left">Memory</th>
+<th align="left">InnoDB</th>
+<th align="left">Archive</th>
+<th align="left">NDB</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>character_set_client</td>
-<td>表示请求数据编码使用的字符集</td>
+<td align="left">B-tree indexes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">No</td>
 </tr>
 <tr>
-<td>character_set_connection</td>
-<td>表示请求序列需要被转换的字符集</td>
+<td align="left">Backup/point-in-time recovery (note 1)</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
 </tr>
 <tr>
-<td>character_set_result</td>
-<td>表示客户端希望的响应数据编码时使用的字符集</td>
+<td align="left">Cluster database support</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+</tr>
+<tr>
+<td align="left">Clustered indexes</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">No</td>
+</tr>
+<tr>
+<td align="left">Compressed data</td>
+<td align="left">Yes (note 2)</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+</tr>
+<tr>
+<td align="left">Data caches</td>
+<td align="left">No</td>
+<td align="left">N/A</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+</tr>
+<tr>
+<td align="left">Encrypted data</td>
+<td align="left">Yes (note 3)</td>
+<td align="left">Yes (note 3)</td>
+<td align="left">Yes (note 4)</td>
+<td align="left">Yes (note 3)</td>
+<td align="left">Yes (note 3)</td>
+</tr>
+<tr>
+<td align="left">Foreign key support</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">Yes (note 5)</td>
+</tr>
+<tr>
+<td align="left">Full-text search indexes</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">Yes (note 6)</td>
+<td align="left">No</td>
+<td align="left">No</td>
+</tr>
+<tr>
+<td align="left">Geospatial data type support</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+</tr>
+<tr>
+<td align="left">Geospatial indexing support</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">Yes (note 7)</td>
+<td align="left">No</td>
+<td align="left">No</td>
+</tr>
+<tr>
+<td align="left">Hash indexes</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">No (note 8)</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+</tr>
+<tr>
+<td align="left">Index caches</td>
+<td align="left">Yes</td>
+<td align="left">N/A</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+</tr>
+<tr>
+<td align="left">Locking granularity</td>
+<td align="left">Table</td>
+<td align="left">Table</td>
+<td align="left">Row</td>
+<td align="left">Row</td>
+<td align="left">Row</td>
+</tr>
+<tr>
+<td align="left">MVCC</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">No</td>
+</tr>
+<tr>
+<td align="left">Replication support (note 1)</td>
+<td align="left">Yes</td>
+<td align="left">Limited (note 9)</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+</tr>
+<tr>
+<td align="left">Storage limits</td>
+<td align="left">256TB</td>
+<td align="left">RAM</td>
+<td align="left">64TB</td>
+<td align="left">None</td>
+<td align="left">384EB</td>
+</tr>
+<tr>
+<td align="left">T-tree indexes</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+</tr>
+<tr>
+<td align="left">Transactions</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+<td align="left">No</td>
+<td align="left">Yes</td>
+</tr>
+<tr>
+<td align="left">Update statistics for data dictionary</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
+<td align="left">Yes</td>
 </tr>
 </tbody></table>
-<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/image-20210808193922376.png" alt="image-20210808193922376"></p>
+<h2 id="1-8-关于引擎的一些操作"><a href="#1-8-关于引擎的一些操作" class="headerlink" title="1.8 关于引擎的一些操作:"></a>1.8 关于引擎的一些操作:</h2><h3 id="1-8-1-查询支持的引擎"><a href="#1-8-1-查询支持的引擎" class="headerlink" title="1.8.1 查询支持的引擎:"></a>1.8.1 查询支持的引擎:</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">show</span> engines<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/1_%E5%88%9D%E8%AF%86MySQL/image-20210806000318560.png"></p>
+<ul>
+<li><code>Support</code>: 是否支持该引擎,<code>DEFAULT</code>表示该引擎是默认存储引擎</li>
+<li><code>Comment</code>: 是该引擎的功能概述</li>
+<li><code>Transaction</code>: 表示该引擎是否支持事务</li>
+<li><code>XA</code>: 表示该存储引擎是否支持分布式事务</li>
+<li><code>Saveoptions</code>: 表示该引擎是否支持部分回滚</li>
+</ul>
+<h3 id="1-8-2-设置表的存储引擎"><a href="#1-8-2-设置表的存储引擎" class="headerlink" title="1.8.2 设置表的存储引擎:"></a>1.8.2 设置表的存储引擎:</h3><ol>
+<li><p>建表的时候就设置存储引擎</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>t_mysql_study<span class="token punctuation">`</span><span class="token punctuation">(</span>
+    字段语句
+<span class="token punctuation">)</span><span class="token keyword">ENGINE</span><span class="token operator">=</span> 存储引擎名字<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li>
+<li><p>修改已经创建好的表的存储引擎:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment"># 修改表的引擎</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> 表名 <span class="token keyword">ENGINE</span> <span class="token operator">=</span> 存储引擎名称<span class="token punctuation">;</span>
+<span class="token comment"># 查看建表语句来看引擎是否修改</span>
+<span class="token keyword">SHOW</span> <span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token punctuation">`</span>t_mysql_study<span class="token punctuation">`</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/1_%E5%88%9D%E8%AF%86MySQL/image-20210806001522467.png"></p>
 </li>
 </ol>
-<h3 id="3-3-3-比较规则的应用"><a href="#3-3-3-比较规则的应用" class="headerlink" title="3.3.3 比较规则的应用:"></a>3.3.3 比较规则的应用:</h3><p>比较规则主要是应用于 数据字段排序.如果发现数据排序结果与期望不同,就可以考虑是不是比较规则的问题.</p>
 
                 
             </div>
@@ -762,13 +916,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/1_%E5%88%9D%E8%AF%86MySQL/">
+                <a href="/hello-world/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="1 初识MySQL">
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
                         
-                        <span class="card-title">1 初识MySQL</span>
+                        <span class="card-title">Hello World</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -783,23 +937,11 @@
                         </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/" class="post-category">
-                                    MySQL是怎样运行的
-                                </a>
-                            
+                            <i class="fas fa-user fa-fw"></i>
+                            pounds
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/MySQL/">
-                        <span class="chip bg-color">MySQL</span>
-                    </a>
-                    
                 </div>
                 
             </div>
@@ -811,13 +953,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/4_InnoDB%E8%AE%B0%E5%BD%95%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">
+                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/3_%E5%AD%97%E7%AC%A6%E9%9B%86%E5%92%8C%E6%AF%94%E8%BE%83%E8%A7%84%E5%88%99/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="4 InnoDB记录存储结构">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="3 字符集和比较规则">
                         
-                        <span class="card-title">4 InnoDB记录存储结构</span>
+                        <span class="card-title">3 字符集和比较规则</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
