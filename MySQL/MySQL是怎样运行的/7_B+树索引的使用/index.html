@@ -1,0 +1,1347 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="7 B+树索引的使用, pounds">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>7 B+树索引的使用 | pounds</title>
+    <link rel="icon" type="image/svg+xml" href="/medias/surprise-regular.svg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/battle-net-brands.svg" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">pounds</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/battle-net-brands.svg" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">pounds</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description post-title">7 B+树索引的使用</h1>
+                </div>
+                <div class="post-info">
+                    
+                        <div class="post-date info-break-policy">
+                            <i class="far fa-check-circle"></i>发布日期:&nbsp;&nbsp;
+                            2021-08-29
+                        </div>
+                    
+
+                    
+                        <div class="post-date info-break-policy">
+                            | <i class="fas fa-history fa-fw"></i>更新日期:&nbsp;&nbsp;
+                            2021-08-29
+                        </div>
+                    
+
+                    
+                        <div class="info-break-policy">
+                            | <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                            5k
+                        </div>
+                    
+
+                    
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/MySQL/">
+                                <span class="chip bg-color">MySQL</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/" class="post-category">
+                                MySQL是怎样运行的
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- 文章顶部下划线 -->
+        <!-- <hr class="clearfix"> -->
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="7-1-B-树索引示意图的简化"><a href="#7-1-B-树索引示意图的简化" class="headerlink" title="7.1 B+树索引示意图的简化:"></a>7.1 B+树索引示意图的简化:</h2><h3 id="示例数据"><a href="#示例数据" class="headerlink" title="示例数据:"></a>示例数据:</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span><span class="token punctuation">(</span>
+	<span class="token punctuation">`</span>id<span class="token punctuation">`</span> <span class="token keyword">INT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token keyword">AUTO_INCREMENT</span><span class="token punctuation">,</span>
+    key1 <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    key2 <span class="token keyword">int</span><span class="token punctuation">,</span>
+    key3 <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    key_part1 <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    key_part2 <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    key_part3 <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token keyword">primary</span> <span class="token keyword">key</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token comment">-- 主键索引(聚簇索引)</span>
+    <span class="token keyword">key</span> idx_key1 <span class="token punctuation">(</span>key1<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token comment">-- 二级索引(唯一索引)</span>
+    <span class="token keyword">unique</span> uk_key2 <span class="token punctuation">(</span>key2<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token comment">-- 二级索引</span>
+    <span class="token keyword">key</span> idx_key3 <span class="token punctuation">(</span>key3<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token comment">-- 二级索引</span>
+    <span class="token keyword">key</span> idx_key_part <span class="token punctuation">(</span>key_part1<span class="token punctuation">,</span>key_part2<span class="token punctuation">,</span>key_part3<span class="token punctuation">)</span> <span class="token comment">-- 联合索引</span>
+<span class="token punctuation">)</span><span class="token keyword">engine</span><span class="token operator">=</span><span class="token keyword">InnoDB</span> <span class="token keyword">charset</span><span class="token operator">=</span>utf8<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>第6章画出了详细的B+树索引结构,现在对索引结构进行简化如下图: <font color="red">里面的数据是假设的</font></p>
+<p><strong>主键索引:</strong> 只画出了叶子结点中的记录真实数据部分</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814183104661.png" alt="image-20210814183104661"></p>
+<p><strong>二级索引:</strong></p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814183400595.png" alt="image-20210814183400595"></p>
+<h2 id="7-2-索引的代价"><a href="#7-2-索引的代价" class="headerlink" title="7.2 索引的代价:"></a>7.2 索引的代价:</h2><h3 id="7-2-1-空间代价"><a href="#7-2-1-空间代价" class="headerlink" title="7.2.1 空间代价:"></a>7.2.1 空间代价:</h3><p>每一个索引都是一颗B+树,而B+树的结点都是一个最大为16KB的数据页,如果数据量很大的话,那么会使用很多的数据页来存储B+树的结点.占用空间很多</p>
+<h3 id="7-2-2-时间代价"><a href="#7-2-2-时间代价" class="headerlink" title="7.2.2 时间代价:"></a>7.2.2 时间代价:</h3><ul>
+<li><p>排序代价:</p>
+<p>B+树中,每层结点都是按照索引列值的大小顺序排列形成一个双向链表,数据页中的记录同样是按照索引列值的大小顺序形成一个单向链表.</p>
+<p>当我们在执行写操作的时候,必然会对记录造成修改,从而会影响到数据页中记录和数据页之间的顺序,然后存储引擎就需要去做一些额外的<code>页分裂</code>,<code>页回收</code>等操作.</p>
+<p>如果索引创建过多,这样的时间消耗就很大.</p>
+</li>
+<li><p>索引选择时间消耗代价:</p>
+<p>在执行查询操作的时候,首先会生成一个查询计划,而一般情况下,<code>mysql</code>在执行过程中只会使用一个二级索引,在执行<code>sql</code>语句的时候会去计算不同索引执行查询时所需要的时间,最后选取时间最少的索引执行.</p>
+<p>如果索引过多,就会花很多的时间去分析.</p>
+</li>
+</ul>
+<h1 id="7-3-B-树索引的应用"><a href="#7-3-B-树索引的应用" class="headerlink" title="7.3 B+树索引的应用:"></a>7.3 B+树索引的应用:</h1><h3 id="7-3-1-用于查询"><a href="#7-3-1-用于查询" class="headerlink" title="7.3.1 用于查询:"></a>7.3.1 用于查询:</h3><p>如果想要使用某个索引执行查询,但是又无法通过查询条件形成合适的扫描区间来减少需要扫描的记录数量时,则不考虑是使用这个索引来执行查询</p>
+<p><strong>全表扫描:</strong> </p>
+<ul>
+<li><p>对于某个查询来说简单粗暴的方式就是扫描表中的所有的记录,判断每一条记录是否符合搜索.如果符合,就返回结果,不符合就跳过该条记录.</p>
+</li>
+<li><p>对于<code>InnoDB</code>搜索引擎的表来说,全表扫描就是从聚簇索引中叶子结点第一条记录依次遍历下去,直到最后一条记录</p>
+</li>
+</ul>
+<p><strong>区间扫描:</strong></p>
+<ul>
+<li><p>由于B+树叶子结点中的记录是按照索引列值的大小顺序进行排列的,可以利用B+树查找索引列值等于某个值的第一条记录,向前或者向后的某个区间内进行记录扫描,来减少记录扫描的范围.</p>
+</li>
+<li><p>比如:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> id <span class="token operator">&gt;=</span> <span class="token number">2</span> <span class="token operator">and</span> id <span class="token operator">&lt;=</span> <span class="token number">100</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这个语句意义是寻找 id 在区间[2,100]的数据, <code>mysql</code>会通过聚簇索引首先定位id = 2 的用户记录,然后沿着叶子结点向后扫描,直到id &gt; 100.</p>
+<p><code>扫描区间</code>: 在这个<code>select</code>语句中[2,100] 就是扫描区间</p>
+<p><code>边界条件</code>: <code>id &gt;= 2 and id &lt;= 100</code>就是形成扫描区间的边界条件</p>
+<p>对于<code>全表扫描</code>来说,这是一个特殊的<code>区间扫描</code>,因为他扫描的区间涵盖了所有的数据,即 <code>(-∞,+∞)</code>.</p>
+</li>
+<li><p>生成扫描区间的<code>sql</code>举例:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key2 <span class="token operator">in</span> <span class="token punctuation">(</span><span class="token number">1438</span><span class="token punctuation">,</span><span class="token number">6328</span><span class="token punctuation">)</span> <span class="token operator">or</span> <span class="token punctuation">(</span>key2 <span class="token operator">&gt;=</span> <span class="token number">38</span> <span class="token operator">and</span> key2 <span class="token operator">&lt;=</span> <span class="token number">79</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这个语句<code>where</code>条件后面使用的key2列,之前的示例数据中,又为key2列创建了索引<code>uk_key2</code>,会形成下面这三个区间:</p>
+<ul>
+<li><p>[1438,1438] : 边界条件是 <code>key2 in (1438)</code> , 这种扫描区间中只有一个值的称为 <code>单点扫描区间</code></p>
+</li>
+<li><p>[6382,6382] : 边界条件是 <code>key2 in (6382)</code></p>
+</li>
+<li><p>[38,79] : 边界条件是 <code>key2 &gt;= 38 and key2 &lt;= 79</code> , 这种扫描区间中含有多个值的区间称为 <code>范围扫描区间</code></p>
+</li>
+<li><p>对应到数轴上就是:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814212755388.png" alt="image-20210814212755388"></p>
+</li>
+</ul>
+</li>
+<li><p>无法生成扫描区间<code>sql</code>举例:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key1 <span class="token operator">&lt;</span> <span class="token string">'a'</span> <span class="token operator">and</span> key3 <span class="token operator">&gt;</span> <span class="token string">'z'</span> <span class="token operator">and</span> common_field <span class="token operator">=</span> <span class="token string">'abc'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li><p>如果使用<code>idx_key1</code>去查询:</p>
+<p>那么扫描区间为 <code>(-∞,'a')</code>,边界条件是 <code>key1 &lt; 'a'</code>,  key3 &gt; ‘z’ and common_field = ‘abc’ 只是普通搜索条件,普通搜索条件在获取到<code>idx_key1</code>的二级索引记录之后,回表查询获取到完整的用户记录后才能判断是否符合普通搜索条件.</p>
+</li>
+<li><p>如果使用<code>idx_key3</code>去查询:</p>
+<p>那么扫描区将为<code>('z',+∞)</code>,边界条件是 <code>key3 &gt; 'z'</code>, 普通条件 key1 &lt; ‘a’ and common_field = ‘abc’. </p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>如何产生扫描区间:</strong></p>
+<p>对于B+索引,只要索引列 和 常量 使用 <code>=</code>, <code>&lt;=&gt;</code>,<code>IN</code>, <code>NOT IN</code>, <code>IS NULL</code>, <code>IS NOT NULL</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>&lt;&gt;</code>, <code>BETWEEN</code>, <code>LIKE</code>连接起来就能产生扫描区间.</p>
+<p>注意:</p>
+<ul>
+<li><p><code>IN</code> 的语义 和 若干个等值匹配操作之间使用 <code>OR</code> 连接起来是一样的</p>
+</li>
+<li><p><code>!=(&lt;&gt;)</code>产生 的扫描区间比较特殊:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 生成的扫描区间为: (-∞,'a') ∪ ('a',+∞)</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key1 <span class="token operator">!=</span> <span class="token string">'a'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre></li>
+<li><p><code>LIKE</code>操作只有在完全匹配和前缀匹配才能产生扫描区间</p>
+</li>
+</ul>
+<p><strong>如何从若干个OR或者AND连接的语句之间提取扫描区间:</strong></p>
+<h5 id="1-所有查询条件都可以生成合适的扫描区间"><a href="#1-所有查询条件都可以生成合适的扫描区间" class="headerlink" title="1. 所有查询条件都可以生成合适的扫描区间:"></a>1. 所有查询条件都可以生成合适的扫描区间:</h5><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key2 <span class="token operator">&gt;</span> <span class="token number">100</span> <span class="token operator">and</span> key2 <span class="token operator">&gt;</span> <span class="token number">200</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>生成的扫描区间为:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814221320446.png" alt="image-20210814221320446"></p>
+<blockquote>
+<p>and连接的查询条件是对两个扫描区间取交集</p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key2 <span class="token operator">&gt;</span> <span class="token number">100</span> <span class="token operator">or</span> key2 <span class="token operator">&gt;</span> <span class="token number">200</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>生成的扫描区间为:</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814221405324.png" alt="image-20210814221405324"></p>
+<blockquote>
+<p>or连接的查询条件是对两个扫描区间取并集</p>
+</blockquote>
+<h5 id="2-部分查询条件能够生成扫描区间"><a href="#2-部分查询条件能够生成扫描区间" class="headerlink" title="2. 部分查询条件能够生成扫描区间:"></a>2. 部分查询条件能够生成扫描区间:</h5><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key2 <span class="token operator">&gt;</span> <span class="token number">100</span> <span class="token operator">and</span> common_field <span class="token operator">=</span> <span class="token string">'abc'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果使用<code>uk_key2</code>索引进行查询:</p>
+<ul>
+<li>查询条件<code>key2 &gt; 100</code>生成的扫描范围是 (100,+∞)</li>
+<li>查询条件<code>common_field = 'abc'</code>由于<code>uk_key2</code>索引中的二级索引记录根本就不按照<code>common_field列</code>进行排列所以这个查询条件根本就不能使扫描范围减小.也就是产生的扫描范围是: <code>(-∞,+∞)</code>.</li>
+<li>最终产生的扫描范围是 (100,+∞)</li>
+</ul>
+<p>如果将sql中<code>and</code>连接换成<code>or</code>连接,产生的扫描范围是 (-∞,+∞)</p>
+<h5 id="3-复杂查询条件中找出扫描范围"><a href="#3-复杂查询条件中找出扫描范围" class="headerlink" title="3. 复杂查询条件中找出扫描范围:"></a>3. 复杂查询条件中找出扫描范围:</h5><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> single_table <span class="token keyword">where</span> 
+<span class="token punctuation">(</span>key1 <span class="token operator">&gt;</span> <span class="token string">'xyz'</span> <span class="token operator">and</span> key2 <span class="token operator">=</span> <span class="token number">738</span><span class="token punctuation">)</span> <span class="token operator">or</span> 
+<span class="token punctuation">(</span>key1 <span class="token operator">&lt;</span> <span class="token string">'abc'</span> <span class="token operator">and</span> key1 <span class="token operator">&gt;</span> <span class="token string">'lmn'</span><span class="token punctuation">)</span> <span class="token operator">or</span> 
+<span class="token punctuation">(</span>key1 <span class="token operator">like</span> <span class="token string">'%suf'</span> <span class="token operator">and</span> key1 <span class="token operator">&gt;</span> <span class="token string">'zzz'</span> <span class="token operator">and</span> <span class="token punctuation">(</span>key2 <span class="token operator">&lt;</span> <span class="token number">8000</span> <span class="token operator">or</span> common_field <span class="token operator">=</span> <span class="token string">'abc'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>分析思路:</p>
+<ul>
+<li><p>找出where中使用了哪些列,以及表中创建了哪些索引.</p>
+<p>在这个sql中查询条件使用了 key1,key2,common_field列,key1列有<code>idx_key1</code>,key2列有<code>uk_key2</code>.</p>
+</li>
+<li><p>将可能使用到的索引进行假设,分析他们的扫描区间</p>
+</li>
+</ul>
+<p><strong>假设使用<code>idx_key1</code>索引:</strong></p>
+<p>首先分析哪些搜索条件是不能产生扫描范围的:</p>
+<p>比如上面的sql,<code>key2 = 738</code>, <code>key2 &lt; 8000</code>, <code>common_field = 'abc'</code>以及<code>key1 like '%suf'</code>是不能产生扫描范围的,直接将他们替换成<code>true</code>,则sql为:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> single_table <span class="token keyword">where</span> 
+<span class="token punctuation">(</span>key1 <span class="token operator">&gt;</span> <span class="token string">'xyz'</span> <span class="token operator">and</span> <span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token operator">or</span> 
+<span class="token punctuation">(</span>key1 <span class="token operator">&lt;</span> <span class="token string">'abc'</span> <span class="token operator">and</span> key1 <span class="token operator">&gt;</span> <span class="token string">'lmn'</span><span class="token punctuation">)</span> <span class="token operator">or</span> 
+<span class="token punctuation">(</span><span class="token boolean">true</span> <span class="token operator">and</span> key1 <span class="token operator">&gt;</span> <span class="token string">'zzz'</span> <span class="token operator">and</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+
+<span class="token comment">-- 简化:</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> single_table <span class="token keyword">where</span> 
+<span class="token punctuation">(</span>key1 <span class="token operator">&gt;</span> <span class="token string">'xyz'</span><span class="token punctuation">)</span> <span class="token operator">or</span> 
+<span class="token punctuation">(</span>key1 <span class="token operator">&lt;</span> <span class="token string">'abc'</span> <span class="token operator">and</span> key1 <span class="token operator">&gt;</span> <span class="token string">'lmn'</span><span class="token punctuation">)</span> <span class="token operator">or</span> 
+<span class="token punctuation">(</span>key1 <span class="token operator">&gt;</span> <span class="token string">'zzz'</span><span class="token punctuation">)</span> 
+
+<span class="token comment">-- key1 &lt; 'abc' and key1 &gt; 'lmn'永远是false</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> single_table <span class="token keyword">where</span> 
+<span class="token punctuation">(</span>key1 <span class="token operator">&gt;</span> <span class="token string">'xyz'</span><span class="token punctuation">)</span> <span class="token operator">or</span>  
+<span class="token punctuation">(</span>key1 <span class="token operator">&gt;</span> <span class="token string">'zzz'</span><span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>因为’xyz’ &lt; ‘zzz’ , 又是使用or连接, 取二者之间的并集, 所以产生的扫描范围是: (‘xyz’,+∞)</p>
+<p><strong>假设使用<code>uk_key2</code>索引:</strong></p>
+<p>替换掉不能差生扫描范围的查询条件之后sql为:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> single_table <span class="token keyword">where</span> 
+<span class="token punctuation">(</span><span class="token boolean">true</span> <span class="token operator">and</span> key2 <span class="token operator">=</span> <span class="token number">738</span><span class="token punctuation">)</span> <span class="token operator">or</span> 
+<span class="token punctuation">(</span><span class="token boolean">true</span> <span class="token operator">and</span> <span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token operator">or</span> 
+<span class="token punctuation">(</span><span class="token boolean">true</span> <span class="token operator">and</span> <span class="token boolean">true</span> <span class="token operator">and</span> <span class="token punctuation">(</span>key2 <span class="token operator">&lt;</span> <span class="token number">8000</span> <span class="token operator">or</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+
+<span class="token comment">-- key2 &lt; 8000 or true 一定为true</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> single_table <span class="token keyword">where</span> key2 <span class="token operator">=</span> <span class="token number">738</span> <span class="token operator">or</span> <span class="token boolean">true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>因为查询条件恒成立,那么就是个全表扫描,扫描范围是: (-∞,+∞).但是使用了二级索引,比主键全表扫描还多了一次回表操作,所以显然不适合使用<code>uk_key2</code>作为查询索引</p>
+<h5 id="4-使用联合索引执行查询索引时的扫描范围"><a href="#4-使用联合索引执行查询索引时的扫描范围" class="headerlink" title="4. 使用联合索引执行查询索引时的扫描范围:"></a>4. 使用联合索引执行查询索引时的扫描范围:</h5><p>联合索引的排序规则:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">key</span> idx_key_part <span class="token punctuation">(</span>key_part1<span class="token punctuation">,</span>key_part2<span class="token punctuation">,</span>key_part3<span class="token punctuation">)</span> <span class="token comment">-- 联合索引</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>以上面这个索引为例:</p>
+<ul>
+<li>先对<code>key_part1</code>列的值进行排序</li>
+<li><code>key_part1</code>相同,再根据<code>key_part2</code>列的值进行排序</li>
+<li><code>key_part1</code>和<code>key_part2</code>列的值都相同的情况下,再使用<code>key_part3</code>列的值进行排序</li>
+</ul>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210814233953955.png" alt="image-20210814233953955"></p>
+<p>举例</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">=</span> <span class="token string">'a'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>使用联合索引确定的扫描范围为 <code>['a','a']</code>,扫描边界为<code>key_part = 'a'</code>.</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">and</span> key_part2 <span class="token operator">=</span> <span class="token string">'b'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>使用联合索引确定的扫描范围为 <code>[('a','b'),('a','b')]</code>,扫描边界为<code>key_part1 = 'a' and key_part2 = 'b'</code>.</p>
+<p><code>[('a','b'),('a','b')]</code>表示: 在<code>idx_key_part</code>索引中,从第一条满足边界条件,到最后一条满足边界条件为止的所有二级索引记录</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">and</span> key_part2 <span class="token operator">=</span> <span class="token string">'b'</span> <span class="token operator">and</span> key_part3 <span class="token operator">=</span> <span class="token string">'c'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p> 使用联合索引确定的扫描范围为 <code>[('a','b','c'),('a','b','c')]</code>,扫描边界为<code>key_part1 = 'a' and key_part2 = 'b' and key_part3 = 'c'</code>.</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">&lt;</span> <span class="token string">'a'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p> 使用联合索引确定的扫描范围为 <code>(-∞,'a')</code>,扫描边界为<code>key_part1 = 'a' and key_part2 = 'b' and key_part3 = 'c'</code>.</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">and</span> key_part2 <span class="token operator">&gt;</span> <span class="token string">'a'</span> <span class="token operator">and</span> key_part2 <span class="token operator">&lt;</span> <span class="token string">'d'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p> 使用联合索引确定的扫描范围为 <code>(('a','a'),('a','d'))</code>,扫描边界为<code>key_part1 = 'a' and key_part2 &gt; 'a' and key_part2 &lt; 'd'</code>.</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part2 <span class="token operator">=</span> <span class="token string">'a'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>因为联合索引排序优先级第一位的并不是<code>key_part2</code>列,所以无法减少扫描范围,因此这条sql不适合使用<code>idx_key_part</code>.</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">and</span> key_part3 <span class="token operator">=</span> <span class="token string">'c'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这条sql能够通过<code>key_part1 = 'a'</code>减少扫描范围,但是由于<code>key_part='a'</code>之后是按照<code>key_part2</code>列的值大小顺序排列的,所以<code>key_part3 = 'c'</code>并不能减少扫描范围.</p>
+<p>所以实际得到的扫描范围是: <code>['a','a']</code>.边界条件是 <code>key_part1 = 'a'</code></p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">&lt;</span> <span class="token string">'b'</span> <span class="token operator">and</span> key_part2 <span class="token operator">=</span> <span class="token string">'a'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这个比较特殊,先看下叶子结点中二级索引的排列, 如果数据为红字的情况就会造成 <code>key_part1 &lt; 3 and key_part2 = 2</code>的查询条件,在使用符合索引的时候,只走key_part1,而不走key_part2,这是因为在<code>key_part1 &lt; 3</code>的前提下二级索引记录根本不是按照<code>key_part2</code>列的值排列的.</p>
+<p><img src="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/7_B+%E6%A0%91%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8/image-20210815001847253.png" alt="image-20210815001847253"></p>
+<p>所以实际上对扫描范围起到作用的只有查询条件<code>key_part1 &lt; 'b'</code>.扫描范围为: <code>[-∞,'b')</code>.</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part1 <span class="token operator">&lt;=</span> <span class="token string">'b'</span> <span class="token operator">and</span> key_part2 <span class="token operator">=</span> <span class="token string">'a'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这条sql跟上面那条sql基本上是一个意思,但是在<code>key_part1 = 'b'</code>的时候,二级索引是按照<code>key_part2</code>值的顺序进行排列的,但是在<code>key_part1 &lt; 'b'</code>的时候,<code>key_part2</code>仍然是起不到作用的.生成的扫描范围是:</p>
+<ul>
+<li><p><code>[-∞,'b')</code>,边界条件: <code>key_part1 &lt; 'b'</code></p>
+</li>
+<li><p><code>[('b','a'),('b','a')]</code>,边界条件: <code>key_part1 = 'b' and key_part2 = 'a'</code></p>
+</li>
+</ul>
+<p>两个扫描范围求并集: <code>((-∞,-∞),('b','a'))</code></p>
+<h3 id="7-3-2-用于排序"><a href="#7-3-2-用于排序" class="headerlink" title="7.3.2 用于排序:"></a>7.3.2 用于排序:</h3><p>由于查询出来的数据不一定是按照我们需要的顺序进行排序的,就需要对数据进行重新排序,<code>mysql</code>中通常是将记录加载到内存中,通过排序算法进行排序操作,如果记录太多甚至还会借助磁盘空间来存放排序结果,在排序操作完成后再把排好序的结果返回给客户端.</p>
+<p><code>文件排序(filesort)</code>: 在内存或者磁盘中进行排序的方式统称为文件排序.文件排序会影响查询速度.</p>
+<blockquote>
+<p> 如果<code>order by</code>后面的字段加上了索引,就可以避免<code>filesort</code></p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">order</span> <span class="token keyword">by</span> key_part1<span class="token punctuation">,</span>key_part2<span class="token punctuation">,</span>key_part3 <span class="token keyword">limit</span> <span class="token number">10</span><span class="token punctuation">;</span> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>由于二级索引中索引记录本身就是按照索引列进行排列的,也就是说数据本身就是按照<code>order by</code>后面的顺序排列的自然无序再次进行额外的排序.</p>
+<h4 id="1-使用索引进行排序时的注意事项"><a href="#1-使用索引进行排序时的注意事项" class="headerlink" title="1. 使用索引进行排序时的注意事项:"></a>1. 使用索引进行排序时的注意事项:</h4><ul>
+<li><p>如果要想使用联合索引优化排序过程,那么必须要将<code>order by</code>后面排序列的顺序按照联合索引声明的顺序.</p>
+</li>
+<li><p>使用联合索引进行排序的时候,可以使用部分联合索引进行排序,比如: (part1,part2,part3),只使用<code>part1</code>,或者<code>part1,part2</code>进行排序,用来排序的列一定要是从左边开始连续的</p>
+</li>
+<li><p>如果使用联合索引进行排序时,查询条件是联合索引从左开始并且连续的常量,那么就可以使用剩下的索引进行排序,比如:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key_part <span class="token operator">=</span> <span class="token string">'a'</span> <span class="token operator">and</span> key_part <span class="token operator">=</span> <span class="token string">'b'</span> <span class="token keyword">order</span> <span class="token keyword">by</span> key_part3 <span class="token keyword">limit</span> <span class="token number">10</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>查询结果已经按照<code>key_part1</code>,<code>key_part2</code>的顺序排列好了,按照联合索引的排列规则,数据实际上已经按照<code>key_part3</code>排列好了,使用<code>order by key_part3</code>进行排序自然不需要额外的排序.</p>
+</li>
+</ul>
+<h4 id="2-无法使用索引进行排序的情况"><a href="#2-无法使用索引进行排序的情况" class="headerlink" title="2. 无法使用索引进行排序的情况:"></a>2. 无法使用索引进行排序的情况:</h4><ol>
+<li><p>排序规则(ASC,DESC)混用:</p>
+<p>使用联合索引进行排序,要求各排序列的排序规则是一致的,即 <code>要么都是ASC,或者要么都是DESC</code>.</p>
+</li>
+<li><p>排序列包不是同一个索引:</p>
+</li>
+<li><p>排序列在同一个索引中,但是不是按照声明的顺序连续出现:</p>
+</li>
+<li><p>用来形成扫描区间的索引列和排序列不同:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key1 <span class="token operator">=</span> <span class="token number">2</span> <span class="token keyword">order</span> <span class="token keyword">by</span> key2 <span class="token keyword">limit</span> <span class="token number">10</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+<li><p>排序列不是以单独列名的形式出现在order by 语句中:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">order</span> <span class="token keyword">by</span> UPPER<span class="token punctuation">(</span>key1<span class="token punctuation">)</span> <span class="token keyword">limit</span> <span class="token number">10</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li>
+</ol>
+<h4 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结:"></a>3. 总结:</h4><p>将索引用于排序,主要是利用索引中的数据都是按照索引列值顺序排列好了的,不需要在进行额外的排序,这一特点.</p>
+<h3 id="7-3-3-索引用于分组"><a href="#7-3-3-索引用于分组" class="headerlink" title="7.3.3 索引用于分组:"></a>7.3.3 索引用于分组:</h3><p>规则与用于排序差不多,分组列必须与索引列的顺序一致,也只能使用索引列中左边连续的列进行分组.</p>
+<h2 id="7-4-回表的代价"><a href="#7-4-回表的代价" class="headerlink" title="7.4 回表的代价:"></a>7.4 回表的代价:</h2><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key1 <span class="token operator">&gt;</span> <span class="token string">'a'</span> <span class="token operator">and</span> key1 <span class="token operator">&lt;</span> <span class="token string">'c'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li><p>全表扫描:</p>
+<p>扫描全部的聚簇索引,然后逐一对聚簇索引记录进行条件判断,不满足就跳过,满足就返回给客户端</p>
+</li>
+<li><p>使用<code>idx_key1</code>索引进行查询:</p>
+<p>在使用<code>idx_key1</code>索引进行查询时 将数据扫描的范围缩小到了(‘a’,’c’)之间, 但是由于查询的是用户记录所有的列,而二级索引记录中只存放了索引列和主键值,所以必须要根据主键值进行重新去聚簇索引中查询(回表).</p>
+<p><code>Mysql</code>中使用页作为空间管理的基本单位,对于<code>InnoDB</code>引擎的表,索引中的数据页必须是存放在磁盘中的,在需要的时候通过页号对应数据页在磁盘中的偏移量加载到内存中来.<code>Mysql</code>会尽量保证数据页是按照页号顺序进行排列的,因此一次磁盘I/O就可以加载很多的二级索引记录到内存中,扫描二级索引记录的代价就不会太大.</p>
+<p>但是在执行回表操作的时候,二级索引记录中存储的主键值是丝毫没有顺序的,极端的情况下,扫描区间中的二级索引记录有n条,主键值存在对应的数据页就有n页,因此可能要执行n次磁盘i/0.磁盘i/o的时间消耗是特别大的</p>
+<p><code>mysql</code>在执行查询的时候,首先会进行查询语句的优化,查询优化器会对表中的记录事先进行一些计算,通过计算出来的统计数据,或者访问少量的记录来获得查询时的回表数量,如果回表数量特别多,就选择<code>全表扫描</code>,否则选择索引.</p>
+<blockquote>
+<p>为了避免全表扫描:</p>
+<ol>
+<li>通过<code>limit</code>减少返回的数量,从而减少回表次数,让查询走索引</li>
+<li>通过<code>limit</code>减少返回的数量,也可以让排序使用索引</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h2 id="7-5-更好的创建和使用索引"><a href="#7-5-更好的创建和使用索引" class="headerlink" title="7.5 更好的创建和使用索引:"></a>7.5 更好的创建和使用索引:</h2><h3 id="7-5-1-只为查询-排序-分组列创建索引"><a href="#7-5-1-只为查询-排序-分组列创建索引" class="headerlink" title="7.5.1 只为查询,排序,分组列创建索引:"></a>7.5.1 只为查询,排序,分组列创建索引:</h3><p>通常只会为<code>where</code>字句中的列,连接字句中的连接列,分组列或者排序列创建索引.</p>
+<p>只出现在查询列表中的列就没有必要创建索引了,比如: </p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> common_field<span class="token punctuation">,</span> key_part4 <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key1 <span class="token operator">=</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这个sql中<code>common_field</code>,<code>key_part4</code>就没有必要创建索引了.</p>
+<h3 id="7-5-2-考虑索引列值不重复的数量"><a href="#7-5-2-考虑索引列值不重复的数量" class="headerlink" title="7.5.2 考虑索引列值不重复的数量:"></a>7.5.2 考虑索引列值不重复的数量:</h3><p>如果索引列重复值太多,那么在通过该索引进行查询的时候,一个常量查询条件都有可能有很多条,这样会造成大量的回表操作,从而导致效率不如全表扫描.</p>
+<p>如果想要加索引的列,值重复数率太高就不要给他加索引了.</p>
+<h3 id="7-5-3-索引列尽量选择占用空间小的类型"><a href="#7-5-3-索引列尽量选择占用空间小的类型" class="headerlink" title="7.5.3 索引列尽量选择占用空间小的类型:"></a>7.5.3 索引列尽量选择占用空间小的类型:</h3><p><code>mysql</code>都是以页为单位进行磁盘I/O加载数据的,如果数据类型占用的空间越小,一页中存放的记录数就越多.<code>在取值范围允许的情况下</code>,索引列尽量选择占用空间小的类型</p>
+<p><font color="red">尤其是主键列,主键列不仅仅是聚簇索引中会记录主键值,所有的二级索引记录都会保存主键值,因此主键列更应该选择占用空间小的类型</font></p>
+<h3 id="7-5-4-为列前缀建立索引"><a href="#7-5-4-为列前缀建立索引" class="headerlink" title="7.5.4 为列前缀建立索引:"></a>7.5.4 为列前缀建立索引:</h3><p>处于减少二级索引记录中存放索引值长度,从而增加数据页中存放索引的数量,减少磁盘I/O的目的,可以列值前缀建立索引.</p>
+<p>比如:</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 先删除在重新创建索引</span>
+<span class="token keyword">alter</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">drop</span> <span class="token keyword">index</span> idx_key1
+<span class="token keyword">alter</span> <span class="token keyword">table</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">add</span> <span class="token keyword">index</span> idx_key1<span class="token punctuation">(</span>key1<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>因为索引列值的字符串前缀实际上也是排好序的,所以可以在二级索引记录中只保留字符串前面几个字符.根据字符串前缀定位出二级索引记录中以索引值为前缀的记录,然后在判断他是否完整的匹配查询条件.</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key1 <span class="token operator">=</span> <span class="token string">'abcdefghijklmn'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>首先会定位出以<code>abcdefghij</code>为前缀的二级索引记录,然后判断他们是否完全匹配<code>abcdefghijklmn</code></p>
+<p><font color="red">这种索引无法用于排序.排序对于字符串比较的是整个字符串的全部字符,但是这种二级索引只是按照字符串的前面几个字符排好顺序</font></p>
+<h3 id="7-5-5-覆盖索引"><a href="#7-5-5-覆盖索引" class="headerlink" title="7.5.5 覆盖索引:"></a>7.5.5 覆盖索引:</h3><p><code>覆盖索引</code>: 查询列表中的列包含在索引中,就称这种查询方式为 覆盖索引.</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> key1<span class="token punctuation">,</span>id <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key1 <span class="token operator">=</span> <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>通过<code>idx_key1</code>进行查询的时候,二级索引记录中包含了 <code>key1</code>,<code>id</code>这两列的值,所以在定位到叶子结点中的二级索引记录时就获取到了查询结果,无需进行回表操作.</p>
+<h3 id="7-5-6-索引列名单独出现在查询条件中"><a href="#7-5-6-索引列名单独出现在查询条件中" class="headerlink" title="7.5.6 索引列名单独出现在查询条件中:"></a>7.5.6 索引列名单独出现在查询条件中:</h3><p>单独出现的意思是: 不要让索引列在查询条件中参与运算</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 不走索引:</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key2 <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">&lt;</span> <span class="token number">5</span>
+<span class="token comment">-- 走索引:</span>
+<span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> <span class="token punctuation">`</span>single_table<span class="token punctuation">`</span> <span class="token keyword">where</span> key2 <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token operator">/</span><span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>sql 1 会被<code>mysql</code>认为 key2*2 是一个列,从而不会走<code>idx_key2</code></p>
+<h3 id="7-5-7-新插入记录时主键大小对效率的影响"><a href="#7-5-7-新插入记录时主键大小对效率的影响" class="headerlink" title="7.5.7 新插入记录时主键大小对效率的影响:"></a>7.5.7 新插入记录时主键大小对效率的影响:</h3><p>主键值大小(新插入数据的主键值)对插入效率的影响,主要问题出现在无序插入,如果插入时刚好要插入的数据页满了,待插入记录的主键值又恰好位于该数据页的中间,就会造成页分裂,从而导致插入效率降低.</p>
+<h3 id="7-5-8-冗余和重复索引"><a href="#7-5-8-冗余和重复索引" class="headerlink" title="7.5.8 冗余和重复索引:"></a>7.5.8 冗余和重复索引:</h3><p>尽量避免冗余和重复的索引,比如不要对联合索引包含的索引再创建单独的索引</p>
+
+                
+            </div>
+            <!-- 文章底部下划线 -->
+<!--            <hr/>-->
+
+            
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/MySQL/">
+                                    <span class="chip bg-color">MySQL</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/hello-world/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        
+                        <span class="card-title">Hello World</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-08-29
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            pounds
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/MySQL/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/8_MySQL%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="8_MySQL数据目录">
+                        
+                        <span class="card-title">8_MySQL数据目录</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-29
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/MySQL%E6%98%AF%E6%80%8E%E6%A0%B7%E8%BF%90%E8%A1%8C%E7%9A%84/" class="post-category">
+                                    MySQL是怎样运行的
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/MySQL/">
+                        <span class="chip bg-color">MySQL</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE' || selection.getRangeAt(0).commonAncestorContainer.nodeName === 'CODE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: pounds<br />'
+            + '文章作者: pounds<br />'
+            + '文章链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2021</span>
+            
+            <span id="year">2021</span>
+            <br>
+            <a href="/about" target="_blank">pounds</a>
+            <br>
+            <span>心有猛虎 | 细嗅蔷薇</span>
+<!--            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>-->
+<!--            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>-->
+<!--            <br>-->
+<!--            -->
+<!--            -->
+<!--            -->
+<!--                -->
+<!--            -->
+<!--            -->
+<!--                <span id="busuanzi_container_site_pv">-->
+<!--                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;-->
+<!--                    <span id="busuanzi_value_site_pv" class="white-color"></span>-->
+<!--            </span>-->
+<!--            -->
+<!--            -->
+<!--                <span id="busuanzi_container_site_uv">-->
+<!--                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;-->
+<!--                    <span id="busuanzi_value_site_uv" class="white-color"></span>-->
+<!--            </span>-->
+<!--            -->
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/pounds018" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:1003937793@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1003937793" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1003937793" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
