@@ -266,3 +266,4 @@ Insert into page_demo values(1,100,'aaaa'),(2,200,'bbbb'),(3,300,'cccc'),(4,400,
 
 - `前四字节`表示页的校验和: 这部分与`File Header`中的校验和是相对应的. 每当一个页在内存中操作完成,写回磁盘的时候都是先写`File Header`,在最后校验和也会被写入到`File Trailer`.如果写回磁盘的过程中,出现了只写了`File Header`中的校验和,没来得及写`FIle Trailer`中的校验和,那么就会出现在校验的时候`File Header`中的校验和是新的,而`File Trailer`中的校验和是旧的,导致出现问题
 - `后四字节`表示页面被修改时对应的LSN的后四字节,正常情况下,`File Header`的`FILE_PAGE_LSN`字段的后四字节相同.
+
