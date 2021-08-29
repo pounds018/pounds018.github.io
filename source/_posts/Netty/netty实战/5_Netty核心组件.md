@@ -62,12 +62,12 @@ categories:
    ![channel的层次结构](5_Netty核心组件/channel层次结构.png)  
    说明:  
 
-      1. 每一个Channel在初始化的时候都将会被分配一个ChannelPipeLine和ChannelConfig.
-      2. 每一个Channel都是独一无二的,Channel实现了java.lang.Comparable接口,从而保证了Channel的顺序.
-      3. ChannelConfig包含了该channel的所有设置,并且支持了更新,可以通过`实现ChannelConfig的子类来给Channel设置某些特殊的设置`  
-      4. ChannelPipeLine是实现Channel只执行I/O操作所有逻辑的容器,里面包含了许多 实际处理数据的handler了, 本质是一个 双向链表,表头表位分别表示入站出站的起点.
-      5. Netty的Channel是线程安全的,所以可以使用多线程对channel进行操作
-      6. 通过Channel.write()操作,数据将从链表表尾开始向链表表头移动,通过ChannelHandlerContext.write()是将数据传递给下一个ChannelHandler开始沿着链表移动.  
+  1. 每一个Channel在初始化的时候都将会被分配一个ChannelPipeLine和ChannelConfig.
+  2. 每一个Channel都是独一无二的,Channel实现了java.lang.Comparable接口,从而保证了Channel的顺序.
+  3. ChannelConfig包含了该channel的所有设置,并且支持了更新,可以通过`实现ChannelConfig的子类来给Channel设置某些特殊的设置`  
+  4. ChannelPipeLine是实现Channel只执行I/O操作所有逻辑的容器,里面包含了许多 实际处理数据的handler了, 本质是一个 双向链表,表头表位分别表示入站出站的起点.
+  5. Netty的Channel是线程安全的,所以可以使用多线程对channel进行操作
+  6. 通过Channel.write()操作,数据将从链表表尾开始向链表表头移动,通过ChannelHandlerContext.write()是将数据传递给下一个ChannelHandler开始沿着链表移动.  
 
 #### 5.2.2.2 常见方法
 
@@ -284,7 +284,7 @@ categories:
    在ByteBuf中,已经被读取过的字节都会被视为是 `可丢弃的字节`, `0`到 `readerIndex`之间就是 `可丢弃区间`,通过`discardReadBytes()`可以丢弃他们并回收空间.
    `discardReadBytes()`方法会将 `readerIndex`重新指向 `byteBuf`数组开始元素的位置,`writerIndex`会减少相应的数量.
    `discardReadBytes()`调用之后的数据结构:  
-   ![ByteBuf数据结构](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/discardReadBytes调用之后.png)
+   ![ByteBuf数据结构](5_Netty核心组件/discardReadBytes调用之后.png)
 
    > 注意:
    >
@@ -372,7 +372,7 @@ categories:
 
 #### 5.3.3.4 查找字节所在的位置:
 
-![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/查找操作.png)  
+![1](5_Netty核心组件/5_netty核心组件/查找操作.png)  
 一般的字节可以通过 `indexOf()` 方法来查找指定的字节,或者通过传入 `ByteProcessor参数` 设定`中止字符`来配合`forEachByte()方法`帮助查找.
 
 ```java
@@ -466,29 +466,29 @@ categories:
 
 #### 5.3.4.1 顺序读操作:  
 
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/顺序读操作1.png)  
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/顺序读操作2.png)  
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/顺序读操作3.png)  
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/顺序读操作4.png)   
+   ![1](5_Netty核心组件/顺序读操作1.png)  
+   ![1](5_Netty核心组件/顺序读操作2.png)  
+   ![1](5_Netty核心组件/顺序读操作3.png)  
+   ![1](5_Netty核心组件/顺序读操作4.png)   
 
 #### 5.3.4.2 顺序写操作:  
 
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/顺序写操作1.png)  
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/顺序写操作2.png)  
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/顺序写操作3.png)  
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/顺序写操作4.png)  
+   ![1](5_Netty核心组件/顺序写操作1.png)  
+   ![1](5_Netty核心组件/顺序写操作2.png)  
+   ![1](5_Netty核心组件/顺序写操作3.png)  
+   ![1](5_Netty核心组件/顺序写操作4.png)  
 
 #### 5.3.4.3 随机写操作:  
 
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/随机写操作.png)  
+   ![1](5_Netty核心组件/随机写操作.png)  
 
 #### 5.3.4.4 随机读操作:  
 
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/随机读操作.png)
+   ![1](5_Netty核心组件/随机读操作.png)
 
 #### 5.3.4.5 其他操作:  
 
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/其他操作.png)
+   ![1](5_Netty核心组件/其他操作.png)
 
 ### 5.3.5 ByteBuf辅助工具类:
 
@@ -497,13 +497,13 @@ categories:
 `ByteBufHolder`是`ByteBuf`的容器,除了实际数据装载之外,我们还需要存储各种属性值.比如HTTP的请求和响应都可以携带消息体,在Netty中消息体就是用`ByteBuf`来表示;
 但是由于不同的协议之间会包含不同的协议字段和功能,这部分数据并不适合写在实际数据中,所以Netty抽象出了一个 `ByteBufHolder接口`持有一个`ByteBuf`用以装载实际数据,
 同时携带不同协议的协议字段和功能. (ByteBufHolder的实现类实现不同协议的协议字段和功能描述).  
-![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/不同协议的ByteBufHolder实现类.png)  
+![1](5_Netty核心组件/不同协议的ByteBufHolder实现类.png)  
 说明:  
 
 - `ByteBufHolder`为Netty的高级特性提供了支持,比如缓冲区池化,其中可以从池中借用ByteBuf,并且在需要时自动释放.  
 - `通常用作需要存储实际数据的消息对象接口`
 - `常用方法`:  
-  ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/ByteBufHolder的常用方法.png)  
+  ![1](5_Netty核心组件/ByteBufHolder的常用方法.png)  
 
 #### 5.3.5.2 ByteBuf内存空间分配:  
 
@@ -513,7 +513,7 @@ categories:
       `池化`不会改变`ByteBuf`api 的语义,只是新的数据需要使用ByteBuf来存储的时候,可以从缓冲池中取出一个 `ByteBuf实例` 来存储数据.
 
    2. 常用方法:  
-      ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/ByteBufAllocator常用方法.png)  
+      ![1](5_Netty核心组件/ByteBufAllocator常用方法.png)  
 
    3. 说明:  
 
@@ -532,7 +532,7 @@ categories:
 
 2. `Unpooled缓冲区`:  
    在某些情况下,如果未能获取到一个 `ByteBufAllocator`的引用.可以通过工具类 `Unpooled` 来创建未池化的 `ByteBuf实例`.  
-   ![1](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/Unpooled工具类.png)  
+   ![1](5_Netty核心组件/Unpooled工具类.png)  
 
 3. `ByteBufUtil类`:  
    `ByteBufUtil` 提供了用于操作 `ByteBuf` 的静态的辅助方法。因为这个API是通用的，并且和池化无关，所以这些方法已然在分配类的外部实现。
@@ -572,7 +572,7 @@ TODO
 
 `Channel,ChannelPipeline,ChannelContext,ChannelHandler之间的关系`:  
 
-![关系图](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/channelhandler关系.png)
+![关系图](5_Netty核心组件/channelhandler关系.png)
 
 Netty的ChannelPipeline和ChannelHandler机制类似于Servlet和Filter过滤器,这类拦截器实际上是责任链模式的一种变形,主要是为了方便事件的拦截和用户业务逻辑的定制.  
 `ChannelHandler`: 从应用程序开发人员的角度来看,Netty的主要组件是ChannelHandler,它充当了所有处理入站和出站数据的应用程序逻辑的容器,ChannelHandler可以适用于任何逻辑操作.  
@@ -587,8 +587,8 @@ handler修改,就能实现对修改封闭和对扩展的支持.
 #### 5.4.2.1 Channel的生命周期:  
 
 `Channel`接口定义了一组和 `ChannelInBoundHandler`api 密切相关的简单但是功能强大的状态模型.`Channel的4个状态` :  
-![channel生命周期](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/Channel生命周期.png)  
-![channel状态模型](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/CHANNEL状态模型.png)  
+![channel生命周期](5_Netty核心组件/Channel生命周期.png)  
+![channel状态模型](5_Netty核心组件/CHANNEL状态模型.png)  
 说明:  
 
 - 只要`Channel`没有关闭,`Channel`就可以再次被注册到`EventLoop`组件上.
@@ -598,7 +598,7 @@ handler修改,就能实现对修改封闭和对扩展的支持.
 
 `ChannelHandler`定义的生命周期操作,`ChannelHandler`被添加到`channelPipeline`或者从`channelPipeline`中移除的时候会触发这些操作.
 每个方法都会接收一个`ChannelHandlerContext`作为参数
-![ChannelHandler生命周期](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/handler的生命周期.png)  
+![ChannelHandler生命周期](5_Netty核心组件/handler的生命周期.png)  
 `channelHandler`两个重要的子接口:  
 
 - `ChannelInboundHandler` : 处理入栈数据以及各种状态变化
@@ -606,7 +606,7 @@ handler修改,就能实现对修改封闭和对扩展的支持.
 
 #### 5.4.2.3 `ChannelInboundHandler`接口:  
 
-![ChannelInboundHandler](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/inboundHandler生命周期.png)  
+![ChannelInboundHandler](5_Netty核心组件/inboundHandler生命周期.png)  
 说明:  
 
 - 上面是 `ChannelInboundHandler`的生命周期方法,channel中的`数据被读取`或者`channel状态发生变化`的时候被调用.
@@ -627,7 +627,13 @@ handler修改,就能实现对修改封闭和对扩展的支持.
 - 也可以通过 `SimpleChannelInboundHandler`来自动释放资源,ps: 不要试图把 `SimpleChannelInboundHandler`中的数据存放起来,以便后期使用.
 
 ```java
-         @Sharable         public class DiscardHandler extends ChannelInboundHandlerAdapter{             @Override             public void channelRead(ChannelHandlerContext ctx,Object msg){                 // 在这里就不需要手动释放msg所占用的byteBuf空间了             }           }
+         @Sharable
+         public class DiscardHandler extends ChannelInboundHandlerAdapter{
+             @Override
+             public void channelRead(ChannelHandlerContext ctx,Object msg){
+                 // 在这里就不需要手动释放msg所占用的byteBuf空间了
+             }  
+         }
 ```
 
 #### 5.4.2.3 `ChannelOutboundHandler`接口:  
@@ -635,11 +641,11 @@ handler修改,就能实现对修改封闭和对扩展的支持.
 出站操作和数据将由 `ChannelOutboundHandler`处理.`ChannelOutboundHandler`的方法将会被 `Channel` , `ChannelPipeline` ,以及 
 `ChannelHandlerContext` 调用.  
 `ChannelOutboundHandler` 可以按照需要`推迟操作` 或者 `推迟事件`, 这可以通过一些复杂的方法来处理请求.   
-![ChannelOutboundHandler](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/outbound生命周期.png)  
+![ChannelOutboundHandler](5_Netty核心组件/outbound生命周期.png)  
 
 #### 5.4.2.4 `ChannelHandlerAadptor`:  
 
-![ChannelHandlerAdaptor](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/adaptor的层次结构.png)  
+![ChannelHandlerAdaptor](5_Netty核心组件/adaptor的层次结构.png)  
 说明:  
 
 - `ChannelInboundHandlerAdapter` 和 `ChannelOutboundHandlerAdapter` 类分别提供了 `ChannelInboundHandler`和 `ChannelOutboundHandler` 
@@ -656,12 +662,12 @@ handler修改,就能实现对修改封闭和对扩展的支持.
 
 - Netty提供了class ResourceLeakDetector ， 它将对你应用程序的缓冲区分配做大约 1%的采样来检测内存泄露。  
   Netty定义的4种`泄漏检测级别`:  
-  ![netty内存检测级别](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/内存检测级别.png)
+  ![netty内存检测级别](5_Netty核心组件/内存检测级别.png)
 
   > 可以通过启动命令: `java -Dio.netty.leakDetectionLevel=ADVANCED` 来设置内存检测级别
 
   检测结果: `存在内存泄漏`如图   
-  ![netty内存检测结果](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/检测结果.png)
+  ![netty内存检测结果](5_Netty核心组件/检测结果.png)
 
 ### 5.4.3 ChannelPipeline:  
 
@@ -687,43 +693,73 @@ handler修改,就能实现对修改封闭和对扩展的支持.
 - 通过Channel获取
 
 ```java
-        bootstrap = new Bootstrap()        .group(clientGroup)        .channel(NioSocketChannel.class)        // 这里实现的是中途断线重连,断线换成netty术语就是channel不活跃了        .handler(new ChannelInitializer<SocketChannel>() {            @Override            protected void initChannel(SocketChannel ch) {                // ch.pipeline就是获取pipeline                ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {                    // channel在运行过程中中断,就会触发这个(channelInactive)方法,然后通过这个方法去重新连接                    @Override                    public void channelInactive(ChannelHandlerContext ctx) throws Exception {                        ctx.channel().eventLoop().schedule(()-> doConnect(),2, TimeUnit.SECONDS);                    }                });            }        });
+        bootstrap = new Bootstrap()
+        .group(clientGroup)
+        .channel(NioSocketChannel.class)
+        // 这里实现的是中途断线重连,断线换成netty术语就是channel不活跃了
+        .handler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            protected void initChannel(SocketChannel ch) {
+                // ch.pipeline就是获取pipeline
+                ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                    // channel在运行过程中中断,就会触发这个(channelInactive)方法,然后通过这个方法去重新连接
+                    @Override
+                    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                        ctx.channel().eventLoop().schedule(()-> doConnect(),2, TimeUnit.SECONDS);
+                    }
+                });
+            }
+        });
 ```
 
 - 通过ChannelHandlerContext获取: 
 
 ```java
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {        Channel curChannel = ctx.channel();          // 获取pipeline        ChannelPipeline pipeline = ctx.pipeline();    }
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        Channel curChannel = ctx.channel();  
+        // 获取pipeline
+        ChannelPipeline pipeline = ctx.pipeline();
+    }
 ```
 
 #### 5.4.3.2 处理ChannelPipeline中的handler:
 
 1. `ChannelPipeline`的修改,实际上是修改双向链表上的handler,`ChannelPipeline`提供了一些对handler进行crud的方法:  
-   ![修改pipeline中ChannelHandler](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/修改pipeline中的handler.png)  
+   ![修改pipeline中ChannelHandler](5_Netty核心组件/修改pipeline中的handler.png)  
 
 ```java
-ChannelPipeline pipeline = ..; // 通过channel或者channelHandlerContext可以获取pipelineFirstHandler firstHandler = new FirstHandler(); pipeline.addLast("handler1", firstHandler); // 加入pipeline.addFirst("handler2", new SecondHandler()); 加入pipeline.addLast("handler3", new ThirdHandler()); 加入        // 此时pipeline中的顺序为 handler2 -> handler1 -> handler3...pipeline.remove("handler3");pipeline.remove(firstHandler);pipeline.replace("handler2", "handler4", new ForthHandler());// 此时pipeline中仅剩 handler4
+ChannelPipeline pipeline = ..; // 通过channel或者channelHandlerContext可以获取pipeline
+FirstHandler firstHandler = new FirstHandler(); 
+pipeline.addLast("handler1", firstHandler); // 加入
+pipeline.addFirst("handler2", new SecondHandler()); 加入
+pipeline.addLast("handler3", new ThirdHandler()); 加入
+        // 此时pipeline中的顺序为 handler2 -> handler1 -> handler3
+...
+pipeline.remove("handler3");
+pipeline.remove(firstHandler);
+pipeline.replace("handler2", "handler4", new ForthHandler());
+// 此时pipeline中仅剩 handler4
 ```
 
 > 由于整个pipeline中的channelHandler都是由与channel绑定的eventLoop来执行的,所以如果要在handler中使用阻塞api,为了不降低整体的I/O性能,在`添加handler`的时候,
 > 可以使用pipeline中带有EventExecutorGroup的add()方法,`将handler交给ExecutorGroup中的线程去执行而不是有eventLoop线程执行`.
 >
 > 2. 访问handler:  
->    ![访问handler](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/访问handler.png)  
+>    ![访问handler](5_Netty核心组件/访问handler.png)  
 
 #### 5.4.3.3 事件的传递:  
 
 `入站操作`:  实际上就是通知pipeline中下一个handler调用对应的接口:  
-![访问handler](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/ChannelPipeline传递事件.png)
+![访问handler](5_Netty核心组件/ChannelPipeline传递事件.png)
 
 > 调用channel或者pipeline对象的上述方法,会将整个事件沿着pipeline进行传播,但是通过handlerContext中的上述方法只会将事件传递给pipeline中下一个能够处理该事件的handler.
 
 `出站操作`:  许多方法会造成底层套接字上发生一些列的动作  
-![访问handler](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/pipeline的出站操作.png)
+![访问handler](5_Netty核心组件/pipeline的出站操作.png)
 
 ### 5.4.4 ChannelHandlerContext:  
 
-![访问handler](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/context与handler之间的关系.png)
+![访问handler](5_Netty核心组件/context与handler之间的关系.png)
 
 - `ChannelHandlerContext`代表 `handler` 和 `pipeline`之间的关联关系,只要有 `handler`分配到`pipeline`中来,就创建一个`context`与`handler关联`.
 
@@ -732,7 +768,7 @@ ChannelPipeline pipeline = ..; // 通过channel或者channelHandlerContext可以
 - `ChannelHandlerContext`与`handler`的关联关系是永远不会改变的,缓存Context的引用是线程安全的.
 
 - `ChannelHandlerContext`常用方法总结:  
-  ![context常用方法](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/context常用方法.png)
+  ![context常用方法](5_Netty核心组件/context常用方法.png)
 
 - `ChannelHandlerContext`与其他用同名方法的组件相比,产生的事件流更短,可以利用这个特性来获取最大的性能,`特性使用场景如下:`
 
@@ -744,13 +780,28 @@ ChannelPipeline pipeline = ..; // 通过channel或者channelHandlerContext可以
   - 正确示例: 
 
   ```java
-      @sharable    public class SharableHandler extends ChannelInboundHandlerAdapter{        @Override        public void channelRead(ChannelHandlerContext ctx, Object meg){             ctx.fireChannelRead(msg);        }             }
+      @sharable
+      public class SharableHandler extends ChannelInboundHandlerAdapter{
+          @Override
+          public void channelRead(ChannelHandlerContext ctx, Object meg){ 
+              ctx.fireChannelRead(msg);
+          }         
+      }
   ```
 
   - 错误示例:
 
   ```java
-      @sharable    public class SharableHandler extends ChannelInboundHandlerAdapter{        private int count;        @Override        public void channelRead(ChannelHandlerContext ctx, Object meg){             // 对共享资源不保证线程安全的修改操作,会导致问题            count++;            ctx.fireChannelRead(msg);        }             }
+      @sharable
+      public class SharableHandler extends ChannelInboundHandlerAdapter{
+          private int count;
+          @Override
+          public void channelRead(ChannelHandlerContext ctx, Object meg){ 
+              // 对共享资源不保证线程安全的修改操作,会导致问题
+              count++;
+              ctx.fireChannelRead(msg);
+          }         
+      }
   ```
 
   > handler必须添加@Shareble注解,并且handler必须要是线程安全的.
@@ -759,7 +810,16 @@ ChannelPipeline pipeline = ..; // 通过channel或者channelHandlerContext可以
   保存`ChannelHandlerContext`在其他channel中使用或者以供稍后使用,完成一些特殊的操作
 
   ```java
-      public class WriteHandler extends ChannelHandlerAdapter {         private ChannelHandlerContext ctx;        @Override        public void handlerAdded(ChannelHandlerContext ctx) {            this.ctx = ctx;        }        public void send(String msg) {            ctx.writeAndFlush(msg);        }    }
+      public class WriteHandler extends ChannelHandlerAdapter { 
+          private ChannelHandlerContext ctx;
+          @Override
+          public void handlerAdded(ChannelHandlerContext ctx) {
+              this.ctx = ctx;
+          }
+          public void send(String msg) {
+              ctx.writeAndFlush(msg);
+          }
+      }
   ```
 
 
@@ -776,7 +836,13 @@ ChannelPipeline pipeline = ..; // 通过channel或者channelHandlerContext可以
   ```
 
   ```java
-      public class EchoServerHandler extends ChannelInboundHandlerAdapter {        @Override        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {            cause.printStackTrace();            ctx.close();        }    }
+      public class EchoServerHandler extends ChannelInboundHandlerAdapter {
+          @Override
+          public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+              cause.printStackTrace();
+              ctx.close();
+          }
+      }
   ```
 
 - 注意事项:  
@@ -794,35 +860,68 @@ ChannelPipeline pipeline = ..; // 通过channel或者channelHandlerContext可以
 - 几乎所有的ChannelOutboundHandler上的方法都会传入一个ChannelPromise的实例.channelPromise是channelFuture的子类,可以用于异步通知也可以用于立即通知的可写方法
 
   ```java
-      ChannelPromise setSuccess();    ChannelPromise setFailure(Throwable cause);
+      ChannelPromise setSuccess();
+      ChannelPromise setFailure(Throwable cause);
   ```
 
 - 处理异常示例:  
   方法1: 通过向出站操作返回的ChannelFuture中添加具体的监听器
 
   ```java
-      ChannelFuture future = channel.write(someMessage)    future.addListener(new ChanelFutureListener() {        @Override        public void operationComplete(ChannelFuture f){            if(!f.isSuccess()){                f.cause().printStackTrace();                f.channel().close();            }             }         })
+      ChannelFuture future = channel.write(someMessage)
+      future.addListener(new ChanelFutureListener() {
+          @Override
+          public void operationComplete(ChannelFuture f){
+              if(!f.isSuccess()){
+                  f.cause().printStackTrace();
+                  f.channel().close();
+              }     
+          }     
+      })
   ```
-
+  
   <font color=red>**启动重连的示例**</font>
-
+  
   ```java
-      // 注意这里一定不要调用sync()    ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress(remoteHost, port));    // 添加链接事件的监听器,当连接事件触发的时候就会调用监听器里面的operationComplete方法    connectFuture.addListener((ChannelFutureListener) future -> {        if (future.isSuccess()){            System.out.println(" 连接成功........");        }else{            System.out.println(String.format(" 连接失败,正在尝试重连 ..... 当前为 第 %s 次重连",retryTime.intValue()));            future.channel().eventLoop().schedule(()->doConnect(),1,TimeUnit.SECONDS);        }    });
+      // 注意这里一定不要调用sync()
+      ChannelFuture connectFuture = bootstrap.connect(new InetSocketAddress(remoteHost, port));
+      // 添加链接事件的监听器,当连接事件触发的时候就会调用监听器里面的operationComplete方法
+      connectFuture.addListener((ChannelFutureListener) future -> {
+          if (future.isSuccess()){
+              System.out.println(" 连接成功........");
+          }else{
+              System.out.println(String.format(" 连接失败,正在尝试重连 ..... 当前为 第 %s 次重连",retryTime.intValue()));
+              future.channel().eventLoop().schedule(()->doConnect(),1,TimeUnit.SECONDS);
+          }
+      });
   ```
-
+  
   方法2: 给出站操作的参数 promise添加listener.
-
+  
   ```java
-      public class OutboundExceptionHandler extends ChannelOutboundHandlerAdapter {        @Override        public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {            promise.addListener(new ChannelFutureListener() {                @Override                public void operationComplete(ChannelFuture f) {                    if (!f.isSuccess()) {                        f.cause().printStackTrace();                        f.channel().close();                    }                 }            });        }     }
+      public class OutboundExceptionHandler extends ChannelOutboundHandlerAdapter {
+          @Override
+          public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
+              promise.addListener(new ChannelFutureListener() {
+                  @Override
+                  public void operationComplete(ChannelFuture f) {
+                      if (!f.isSuccess()) {
+                          f.cause().printStackTrace();
+                          f.channel().close();
+                      } 
+                  }
+              });
+          } 
+      }
   ```
-
+  
   > 两种方法如何选择: 不同出站事件的细节异常处理使用`方法一`更好, `方法二`更适合于一般的异常处理
 
 
 ## 5.5 EventLoopGroup和EventLoop:  
 
 **继承结构**  
-![NioEventLoop继承结构](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/NioEventLoop继承结构.png)  
+![NioEventLoop继承结构](5_Netty核心组件/NioEventLoop继承结构.png)  
 
 ### 5.5.1 EventLoop: 
 
@@ -832,7 +931,15 @@ ChannelPipeline pipeline = ..; // 通过channel或者channelHandlerContext可以
 事件循环的大致思路:  
 
 ```java
-    // 只要线程没有被关闭,就一直循环执行    while (!terminated) {        // 阻塞获取就绪事件        List<Runnable> readyEvents = blockUntilEventsReady();        // 遍历就绪事件,逐一执行        for (Runnable event : readEvents) {            ev.run();        }    }
+    // 只要线程没有被关闭,就一直循环执行
+    while (!terminated) {
+        // 阻塞获取就绪事件
+        List<Runnable> readyEvents = blockUntilEventsReady();
+        // 遍历就绪事件,逐一执行
+        for (Runnable event : readEvents) {
+            ev.run();
+        }
+    }
 ```
 
 1. 在Netty所提供的线程模型中 `EventLoop` 将由一个永远不会改变的 线程 驱动(即由这个线程来处理`EventLoop`中就绪的事件).   
@@ -862,28 +969,47 @@ ChannelPipeline pipeline = ..; // 通过channel或者channelHandlerContext可以
    - 延迟多少时间后执行一次:  
 
    ```java
-        Channel ch = ...     // 60 秒之后执行一次,之后不再执行     ScheduledFuture<?> future = ch.eventLoop().schedule( new Runnable() {             @Override             public void run() {                 System.out.println("60 seconds later");             }     }, 60, TimeUnit.SECONDS);
+        Channel ch = ...
+        // 60 秒之后执行一次,之后不再执行
+        ScheduledFuture<?> future = ch.eventLoop().schedule( new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("60 seconds later");
+                }
+        }, 60, TimeUnit.SECONDS);
    ```
-
+   
    - 定时任务:  
-
+   
    ```java
-        Channel ch = ...     // 60秒后,执行第一次,之后每60秒执行一次.     ScheduledFuture<?> future = ch.eventLoop().scheduleAtFixedRate(         new Runnable() {             @Override             public void run() {             System.out.println("Run every 60 seconds");         }     }, 60, 60, TimeUnit.Seconds);
+        Channel ch = ...
+        // 60秒后,执行第一次,之后每60秒执行一次.
+        ScheduledFuture<?> future = ch.eventLoop().scheduleAtFixedRate(
+            new Runnable() {
+                @Override
+                public void run() {
+                System.out.println("Run every 60 seconds");
+            }
+        }, 60, 60, TimeUnit.Seconds);
    ```
-
+   
    - 任务的取消: 通过future来取消或者检查任务的执行状态  
-
+   
    ```java
-        ScheduledFuture<?> future = ch.eventLoop().scheduleAtFixedRate(...);     // Some other code that runs...     // 任务的取消     boolean mayInterruptIfRunning = false;     future.cancel(mayInterruptIfRunning);
+        ScheduledFuture<?> future = ch.eventLoop().scheduleAtFixedRate(...);
+        // Some other code that runs...
+        // 任务的取消
+        boolean mayInterruptIfRunning = false;
+        future.cancel(mayInterruptIfRunning);
    ```
-
+   
    说明:
-
+   
    1. netty的任务调度是否立即执行是取决于调用任务的线程是否是 与`EventLoop`绑定的线程,即`负责处理`该channel事件的线程.如果是那么将会立即执行,如果不是那么将会把任务放入延时队列中,
       在 `EventLoop` 下次处理它的事件的时候,会去处理这些任务.`保证了任务不会被多个线程同时执行`.  
    2. `EventLoop`的任务队列,是 `EventLoop独有的`,独立于其他EventLoop.
    3. 调度任务执行的逻辑:  
-      ![调度任务执行逻辑](../../../../../MyInterviewSummary/docs/_media/chapter13_Netty/5_netty核心组件/eventLoop调度任务执行的逻辑.png)
+      ![调度任务执行逻辑](5_Netty核心组件/eventLoop调度任务执行的逻辑.png)
 
 ### 5.5.2 EventLoopGroup:
 
